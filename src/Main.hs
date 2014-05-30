@@ -5,8 +5,8 @@ import System.IO (hSetBuffering, BufferMode(NoBuffering), stdout)
 
 --Einzelner Schuss
 type Shoot = (String, Int)
---Schüsse sortiert nach Reihe
-type AllShoots = [(String, [Int])]
+--Schüsse sortiert nach Reihe String = Buchstabe, Erstes Int = Spalte Zweites Int = schuss 0==kein Schuss 1 == Daneben 2 == Treffer
+type AllShoots = [(String, [(Int, Int)])]
 
 main :: IO ()
 main = do
@@ -17,7 +17,11 @@ main = do
 game = printNumbers ++ printAllShoots testShoots
 	
 testShoots :: AllShoots
-testShoots = [("A", [1,2,5,9]), ("B",[3,4,5,10])]
+testShoots = [("A", [(1,1),(2,1),(3,0),(4,0),(5,2),(6,0),(7,0),(8,0),(9,1),(10,0)]), ("B",[(1,0),(2,0),(3,1),(4,1),(5,2),(6,0),(7,0),(8,0),(9,0),(10,1)]),
+              ("C", [(1,0),(2,2),(3,0),(4,0),(5,2),(6,0),(7,0),(8,0),(9,0),(10,0)]), ("D",[(1,0),(2,0),(3,0),(4,0),(5,2),(6,0),(7,0),(8,0),(9,0),(10,0)]),
+			  ("E", [(1,1),(2,1),(3,1),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]), ("F",[(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]),
+			  ("G", [(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]), ("H",[(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]),
+			  ("I", [(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]), ("J",[(1,0),(2,0),(3,0),(4,0),(5,0),(6,1),(7,0),(8,0),(9,0),(10,0)])]
 
 
 --Druckt die Schüsse 
@@ -27,29 +31,49 @@ printAllShoots [x] = fst x ++ printShoot' (snd x)
 printAllShoots (x:xs) = printShoot'' x ++ printAllShoots xs
 
 --Druckt die Spaltenbezeichnung des Spiels
-printNumbers = "    1   2   3   4   5   6   7   8   9   10\n" 
+printNumbers = "    1   2   3   4   5   6   7   8   9   10\n\n" 
 	  
 
 --Druckt die Reihenbezeichnung (z.B. A)
-printShoot'' :: (String, [Int]) -> String
+printShoot'' :: (String, [(Int,Int)]) -> String
 printShoot'' x = fst x ++ printShoot' (snd x)
  
 -- Druckt einen einzelnen Schuss)
-printShoot :: Int -> String
+printShoot :: (Int,Int) -> String
 printShoot x
-    | x == 1 = "   O"
-	| x == 2 = "   O"
-	| x == 3 = "   O"
-	| x == 4 = "   O"
-	| x == 5 = "   O"
-	| x == 6 = "   O"
-	| x == 7 = "   O"
-	| x == 8 = "   O"
-	| x == 9 = "   O"
-    | x == 10 = "   O"
+    | fst x == 1 && snd x ==0 = "    "
+    | fst x == 1 && snd x ==1 = "   O"
+	| fst x == 1 && snd x ==2 = "   X"
+	| fst x == 2 && snd x ==0 = "    "
+	| fst x == 2 && snd x ==1 = "   O"
+	| fst x == 2 && snd x ==2 = "   X"
+    | fst x == 3 && snd x ==0 = "    "
+	| fst x == 3 && snd x ==1 = "   O"
+	| fst x == 3 && snd x ==2 = "   X"
+    | fst x == 4 && snd x ==0 = "    "
+	| fst x == 4 && snd x ==1 = "   O"	
+	| fst x == 4 && snd x ==2 = "   X"
+    | fst x == 5 && snd x ==0 = "    "
+	| fst x == 5 && snd x ==1 = "   O"
+	| fst x == 5 && snd x ==2 = "   X"
+    | fst x == 6 && snd x ==0 = "    "
+	| fst x == 6 && snd x ==1 = "   O"
+	| fst x == 6 && snd x ==2 = "   X"
+    | fst x == 7 && snd x ==0 = "    "
+	| fst x == 7 && snd x ==1 = "   O"
+	| fst x == 7 && snd x ==2 = "   X"
+    | fst x == 8 && snd x ==0 = "    "
+	| fst x == 8 && snd x ==1 = "   O"
+	| fst x == 8 && snd x ==2 = "   X"
+    | fst x == 9 && snd x ==0 = "    "
+	| fst x == 9 && snd x ==1 = "   O"
+	| fst x == 9 && snd x ==2 = "   X"
+    | fst x == 10 && snd x ==1 = "   O"
+	| fst x == 10 && snd x ==2 = "   X"
+    | fst x == 10 && snd x ==0 = "    "
 	
   
 --Nimmt alle auf eine Reihe abgefeuerten Schüsse entgegen und druckt sie einzeln
-printShoot' :: [Int] -> String
+printShoot' :: [(Int,Int)] -> String
 printShoot' [x] = printShoot x++"\n\n"
 printShoot' (x:xs) = printShoot x ++ printShoot' xs
