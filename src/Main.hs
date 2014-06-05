@@ -2,22 +2,58 @@ module Main where
 
 import System.IO (hSetBuffering, BufferMode(NoBuffering), stdout)
 
+import qualified Data.Map as M
 
 --Einzelner Schuss
-type Shoot = (String, Int)
+-- type Shoot = (String, Int)
 --Schüsse sortiert nach Reihe String = Buchstabe, Erstes Int = Spalte Zweites Int = schuss 0==kein Schuss 1 == Daneben 2 == Treffer
-type AllShoots = [(String, [(Int, Int)])]
+type Coord = (Char,Int)
+
+type Ship = [(Coord, Status)]
+
+type MyShips = [Ship]
+
+
+
+
+data Status = Fail | Hit | Destroyed
+
+type EnemyField  = M.Map Coord Status
+
+data Game = Game {
+      myField :: ...
+	  enemyField :: ...
+	  sock :: ...
+	  myShoot :: Bool
+    }
+
+insertStatus :: Coord -> Status -> EnemyField -> EnemyField
+insertStatus                        
 
 main :: IO ()
 main = do
-    hSetBuffering stdout NoBuffering
-    putStr $ "Hallo"
+    let myField = generateShips
+	let enemyField = M.empty
+	-- Initialisierung
+	gameLoop myField enemyField sock
+	
+gameLoop gameStatus =
+    do
+		-- Koord einlesen
+		-- Schuss übertragen
+		-- Antwort
+		let myGS = gameStatus { myField = ...
+                              ,  
+							  }
+		printFields gameStatus'
+		gameLoop gameStatus' 
 
 -- druckt den Spielbildschirm
 game = printNumbers ++ printAllShoots testShoots
 	
 testShoots :: AllShoots
-testShoots = [("A", [(1,1),(2,1),(3,0),(4,0),(5,2),(6,0),(7,0),(8,0),(9,1),(10,0)]), ("B",[(1,0),(2,0),(3,1),(4,1),(5,2),(6,0),(7,0),(8,0),(9,0),(10,1)]),
+testShoots = 
+             [("A", [(1,1),(2,1),(3,0),(4,0),(5,2),(6,0),(7,0),(8,0),(9,1),(10,0)]), ("B",[(1,0),(2,0),(3,1),(4,1),(5,2),(6,0),(7,0),(8,0),(9,0),(10,1)]),
               ("C", [(1,0),(2,2),(3,0),(4,0),(5,2),(6,0),(7,0),(8,0),(9,0),(10,0)]), ("D",[(1,0),(2,0),(3,0),(4,0),(5,2),(6,0),(7,0),(8,0),(9,0),(10,0)]),
 			  ("E", [(1,1),(2,1),(3,1),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]), ("F",[(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]),
 			  ("G", [(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]), ("H",[(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0)]),
