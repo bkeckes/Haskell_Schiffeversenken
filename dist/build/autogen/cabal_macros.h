@@ -7,6 +7,13 @@
   (major1) == 4 && (major2) <  6 || \
   (major1) == 4 && (major2) == 6 && (minor) <= 0)
 
+/* package containers-0.5.0.0 */
+#define VERSION_containers "0.5.0.0"
+#define MIN_VERSION_containers(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  5 || \
+  (major1) == 0 && (major2) == 5 && (minor) <= 0)
+
 /* tool alex-3.0.5 */
 #define TOOL_VERSION_alex "3.0.5"
 #define MIN_TOOL_VERSION_alex(major1,major2,minor) (\
