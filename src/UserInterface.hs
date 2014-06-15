@@ -16,6 +16,11 @@ valueInMap x = M.lookup x enemyField
 --Druckt die Spaltenbezeichnung des Spiels
 printNumbers = "    1   2   3   4   5   6   7   8   9   10\n\n" 
 	  
+	  
+printField::Field->String
+printField [] = "empty"
+printField (x:[]) = "Only one element" ++printField x
+
 
 --Druckt die Reihenbezeichnung (z.B. A)
 -- printShoot'' :: (String, [(Int,Int)]) -> String
