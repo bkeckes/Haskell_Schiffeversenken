@@ -22,12 +22,13 @@ printNumbers = "    1   2   3   4   5   6   7   8   9   10\n\n"
 -- printShoot'' x = fst x ++ printShoot' (snd x)
  
 -- Druckt einen einzelnen Schuss)
--- printShoot :: Maybe Status | Status -> String
+-- printShoot :: Status -> String
 -- printShoot x
     -- |  x ==Nothing = "    "
     -- |  x ==Fail = "   O"
 	-- |  x ==Hit = "   X"
 	-- |  x ==Destroyed = "   #"
+	
   
 --Nimmt alle auf eine Reihe abgefeuerten Schüsse entgegen und druckt sie einzeln
 -- printShoot' :: [(Int,Int)] -> String

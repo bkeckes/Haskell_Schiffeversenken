@@ -3,6 +3,7 @@ module Main where
 import System.IO (hSetBuffering, BufferMode(NoBuffering), stdout)
 import Datatypes
 import UserInterface
+import War
 
 import qualified Data.Map as M
 
@@ -14,7 +15,8 @@ import qualified Data.Map as M
 enemyField = M.fromList[('A',1),('A',10)]
 main :: IO ()
 main = do
-    putStrLn "Hallo"
+    putStrLn "Schiffe versenken"
+	putStrLn showBorder
     -- let myField = generateShips
     -- let enemyField = M.fromList([('A',1),('A',10)])
 	-- putStrLn enemyField
