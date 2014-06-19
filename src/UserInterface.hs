@@ -4,7 +4,7 @@ import Datatypes
 import qualified Data.Map as M
 
 enemyField :: EnemyField  
-enemyField = M.fromList[(('A',1),Fail),(('A',5),Hit),(('A',10),Destroyed)]
+enemyField = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed)]
 
 createRow :: Char -> Int -> [Coord]
 createRow x 11 = []
@@ -35,8 +35,14 @@ printShoot x
 	|  x ==Hit = "   X"
 	|  x ==Destroyed = "   #"
   
+
 -- Druckt die Reihen
 printShoot' :: Coord -> String
 printShoot' x 
     | snd x == 1 = "A    " ++ printShoot ( valueInMap x)
     | otherwise = printShoot (valueInMap x)
+
+--Nimmt alle auf eine Reihe abgefeuerten Schüsse entgegen und druckt sie einzeln
+-- printShoot' :: [(Int,Int)] -> String
+-- printShoot' [x] = printShoot x++"\n\n"
+-- printShoot' (x:xs) = printShoot x ++ printShoot' xs
