@@ -3,14 +3,16 @@ import qualified Data.Map as M
 
 
 --Coordinate bestehend aus Buchstaben und Zahl
-type Coord = (Char,Int)
+type Coord = (Int,Int)
+
+type Coords = [(Int,Int)]
 
 type Ship = [(Coord, Status)]
 
-type MyShips = [Ship]
+type MyShips = [Ship] 
 
 
-data Status = Fail | Hit | Destroyed
+data Status = Fail | Hit | Destroyed deriving (Eq,Show)
 
 type EnemyField  = M.Map Coord Status
 
