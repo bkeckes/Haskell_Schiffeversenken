@@ -43,3 +43,17 @@ isHitInShip c (s:ss) = flag || isHitInShip c ss
 	where flag = if c == fst s && snd s == Fail
 						then True
 						else False
+
+coordIsPlayed::Coord->EnemyField->Bool
+coordIsPlayed = M.member
+
+initializeField::MyShips->EnemyField
+initializeField ships = insertShipsInField ships M.empty
+
+insertShipsInField::MyShips->EnemyField->EnemyField
+insertShipsInField [] field = field
+insertShipsInField (s:ss) field = M.union (insertShipInField s field) (insertShipsInField ss field)
+
+insertShipInField::Ship->EnemyField->EnemyField
+insertShipInField [] field = field
+insertShipInField (c:cs) field = M.union (M.insert (fst c) PartShip field) (insertShipInField cs field)
