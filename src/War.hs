@@ -3,6 +3,7 @@ module War where
 import Datatypes
 import Data.Char (ord)
 import System.Random
+import Logic
 
 --shootOnEnemy::Coord->Status
 --shootOnEnemy c = sendShoot coord
