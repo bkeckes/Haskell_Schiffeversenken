@@ -16,7 +16,7 @@ isAShipDestroyed (x:xs) = isAllHit x || isAShipDestroyed xs
 --gibt Anfang und Ende eines zerstörtem Schiffs zurück
 --und setzt Status auf destroyed
 setShipToDestroyed::MyShips->(Coord,Coord)
-
+setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedShip s
 
 --setzt durch Zufall alle Shiffe in das Feld
 --insertShips::MyShips->MyShips
@@ -35,6 +35,27 @@ isAllHit (x:xs) = (isCoordHit x) && isAllHit (xs)
 isCoordHit:: (Coord, Status) -> Bool
 isCoordHit (_,s) = if (s==Hit) then True
                                else False
+
+--gib zerstörtes Shiff zurück							   
+getDestroyedShip::MyShips->Ship
+getDestroyedShip [] = []
+getDestroyedShip (x:[]) = if(isAllHit x) == True
+                            then x
+                            else []
+getDestroyedShip (x:xs) = if(isAllHit x) == True
+                           then x
+                           else getDestroyedShip xs
+						   
+getStartAndEnd::Ship->(Coord,Coord)
+getStartAndEnd s = ((1,2),(3,4))
+
+
+changeStatusToDestroyed::Ship->Ship
+changeStatusToDestroyed (x:[]) = changeTupelToHit x
+changeStatusToDestroyed (x:xs) = (changeTupelToHit x):changeStatusToDestroyed xs
+
+changeTupelToHit::(Coord,Status)->(Coord,Status)
+changeTupelToHit (c,s) = (c,Destroyed)
 ---------------------------------------------------------
 --  Ende Hilfsfunktionen --------------------------------
 ---------------------------------------------------------
