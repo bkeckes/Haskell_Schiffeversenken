@@ -10,8 +10,8 @@ import Logic
 --ist ein Schiff der Liste komplett gesunken?
 isAShipDestroyed::MyShips->Bool
 isAShipDestroyed [] = False
-isAShipDestroyed (x:[]) = isAllHit x
-isAShipDestroyed (x:xs) = isAllHit x || isAShipDestroyed xs
+isAShipDestroyed (x:[]) = isOneShipDestroyed x
+isAShipDestroyed (x:xs) = isOneShipDestroyed x || isAShipDestroyed xs
 
 --gibt Anfang und Ende eines zerstörtem Schiffs zurück
 --und setzt Status auf destroyed
@@ -19,17 +19,19 @@ setShipToDestroyed::MyShips->(Coord,Coord)
 setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedShip s
 
 --setzt durch Zufall alle Shiffe in das Feld
---insertShips::MyShips->MyShips
+generateMyShips::MyShips
+generateMyShips = generateNewShip [] 5
+
 
 
 ---------------------------------------------------------
 --  Hilfsfunktionen -------------------------------------
 ---------------------------------------------------------
 --Ist das Schiff komplett getroffen? Also auf jeder Kooridinate Status = Hit?
-isAllHit::Ship -> Bool
-isAllHit [] = True
-isAllHit (x:[]) = isCoordHit x
-isAllHit (x:xs) = (isCoordHit x) && isAllHit (xs)
+isOneShipDestroyed::Ship -> Bool
+isOneShipDestroyed [] = True
+isOneShipDestroyed (x:[]) = isCoordHit x
+isOneShipDestroyed (x:xs) = (isCoordHit x) && isOneShipDestroyed (xs)
 
 --ist der Status dieser Koordinate Hit?
 isCoordHit:: (Coord, Status) -> Bool
@@ -39,23 +41,38 @@ isCoordHit (_,s) = if (s==Hit) then True
 --gib zerstörtes Shiff zurück							   
 getDestroyedShip::MyShips->Ship
 getDestroyedShip [] = []
-getDestroyedShip (x:[]) = if(isAllHit x) == True
+getDestroyedShip (x:[]) = if(isOneShipDestroyed x) == True
                             then x
                             else []
-getDestroyedShip (x:xs) = if(isAllHit x) == True
+getDestroyedShip (x:xs) = if(isOneShipDestroyed x) == True
                            then x
                            else getDestroyedShip xs
-						   
+
+--gibt die Start und End Koordinaten eines Shiffs in einem Tupel zurück.
 getStartAndEnd::Ship->(Coord,Coord)
-getStartAndEnd s = ((1,2),(3,4))
+getStartAndEnd [] = ((0,0),(0,0))
+getStartAndEnd s = (getCoord(head s), getCoord (last s))
 
+--gibt die Koordinaten aus dem Koordinaten-Status Tupel zurück
+getCoord::(Coord, Status)->Coord
+getCoord (c,_) = c
 
+--Ändert den Status eines Schiffes auf allen Koordinaten auf Destroyed
 changeStatusToDestroyed::Ship->Ship
-changeStatusToDestroyed (x:[]) = changeTupelToHit x
-changeStatusToDestroyed (x:xs) = (changeTupelToHit x):changeStatusToDestroyed xs
+changeStatusToDestroyed [] = []
+changeStatusToDestroyed (x:[]) = (changeTupelToDestroyed x):[]
+changeStatusToDestroyed (x:xs) = (changeTupelToDestroyed x):changeStatusToDestroyed xs
 
-changeTupelToHit::(Coord,Status)->(Coord,Status)
-changeTupelToHit (c,s) = (c,Destroyed)
+--Den Status eines Tupels auf Destroyed setzen
+changeTupelToDestroyed::(Coord,Status)->(Coord,Status)
+changeTupelToDestroyed (c,s) = (c,Destroyed)
+
+generateNewShip::MyShips->Int->MyShips
+generateNewShip s i = ((generateRandomCoord i, Fail):[]):s
+
+generateRandomCoord::Int->Coord
+generateRandomCoord i = (2,9)
+
 ---------------------------------------------------------
 --  Ende Hilfsfunktionen --------------------------------
 ---------------------------------------------------------
