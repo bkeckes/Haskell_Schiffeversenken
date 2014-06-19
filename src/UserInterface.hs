@@ -4,7 +4,7 @@ import Datatypes
 import qualified Data.Map as M
 
 enemyField :: EnemyField  
-enemyField = M.fromList[(('A',1),Fail),(('A',5),Hit),(('A',10),Destroyed)]
+enemyField = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed)]
 
 -- druckt den Spielbildschirm
 -- game = printNumbers ++ printAllShoots testShoots
