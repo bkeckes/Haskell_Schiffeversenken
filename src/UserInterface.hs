@@ -32,10 +32,10 @@ printNumbers = "    1   2   3   4   5   6   7   8   9   10\n\n"
 -- Druckt einen einzelnen Schuss)
 printShoot :: Maybe Status -> String
 printShoot x
-    |  x ==Just Fail = "   O"
-    |  x ==Just Hit = "   X"
-    |  x ==Just Destroyed = "   #"
-    | otherwise = "    "
+    |  x ==Nothing = "    "
+    |  x ==Fail = "   O"
+	|  x ==Hit = "   X"
+	|  x ==Destroyed = "   #"
   
 -- Druckt die Reihen
 printShoot' :: EnemyField -> Coord -> String
