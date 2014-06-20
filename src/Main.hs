@@ -16,7 +16,7 @@ enemyField = M.fromList[('A',1),('A',10)]
 main :: IO ()
 main = do
     putStrLn "Schiffe versenken"
-	putStrLn makeField
+	-- putStrLn makeField
     -- let myField = generateShips
     -- let enemyField = M.fromList([('A',1),('A',10)])
 	-- putStrLn enemyField

@@ -23,17 +23,18 @@ game = printNumbers ++ (show (map printShoot' createField))
 --Schaut ob eine Coordinate in der Map ist
 valueInMap :: Coord -> Maybe Status
 valueInMap x = M.lookup x enemyField
-	
+
+
 --Druckt die Spaltenbezeichnung des Spiels
 printNumbers = "    1   2   3   4   5   6   7   8   9   10\n\n" 
 
 -- Druckt einen einzelnen Schuss)
 printShoot :: Maybe Status -> String
 printShoot x
-    |  x ==Nothing = "    "
-    |  x ==Fail = "   O"
-	|  x ==Hit = "   X"
-	|  x ==Destroyed = "   #"
+    |  x ==Just Fail = "   O"
+    |  x ==Just Hit = "   X"
+    |  x ==Just Destroyed = "   #"
+    | otherwise = "    "
   
 -- Druckt die Reihen
 printShoot' :: Coord -> String

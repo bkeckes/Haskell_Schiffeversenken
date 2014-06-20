@@ -14,7 +14,7 @@ type Ship = [(Coord, Status)]
 type MyShips = [Ship]
 
 data Status = Fail | Hit | Destroyed | None
-    deriving (Show)
+    deriving (Show, Eq)
 	
 
 type EnemyField  = M.Map Coord Status
