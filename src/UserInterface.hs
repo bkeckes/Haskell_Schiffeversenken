@@ -3,13 +3,6 @@ module UserInterface where
 import Datatypes
 import qualified Data.Map as M
 
-<<<<<<< HEAD
--- enemyField :: EnemyField  
--- enemyField = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed)]
-=======
-enemyField :: EnemyField  
-enemyField = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed)]
->>>>>>> a9144a9f85a135e9e43760140ae9e6bc6fe1bab1
 
 createRow :: Int -> Int -> [Coord]
 createRow x 11 = []

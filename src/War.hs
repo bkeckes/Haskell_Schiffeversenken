@@ -2,7 +2,7 @@ module War where
 
 import Datatypes
 import Data.Char (ord)
-import System.Random
+
 import Logic
 
 
@@ -72,6 +72,12 @@ generateNewShip s i = ((generateRandomCoord i, Fail):[]):s
 
 generateRandomCoord::Int->Coord
 generateRandomCoord i = (2,9)
+
+			   
+zufall :: Int -> Int -> [Int]
+zufall x  y = take y (randomRs (1,100) g)
+    where
+    g = mkStdGen x
 
 ---------------------------------------------------------
 --  Ende Hilfsfunktionen --------------------------------
