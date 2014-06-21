@@ -141,7 +141,10 @@ coordPlusOne True ((x,y),s) = ((x+1,y),s)
 -- gibt die Systemzeit aus. Wichtig als Salt für den zufallsgenerator
 getTime::Int
 getTime =  round (unsafePerformIO getPOSIXTime) :: Int
-		
+
+--ist Paramter >=5 wird False zurück gegeben, sonst True
+makeHorizontal::Int->Bool
+makeHorizontal a = (a `elem` [1..4])			
 
 ---------------------------------------------------------
 --  Ende Hilfsfunktionen --------------------------------
