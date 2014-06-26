@@ -27,7 +27,15 @@ setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedSh
 generateMyShips::MyShips
 generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 4 $ generateNewShip 0 4 $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
 
+generateMyShips' :: IO MyShips
+generateMyShips' = do
+    gen <- getStdGen (randomR (1,10))
+	(val, nextGen) <- next gen
+	let newShip = genNewShip val 2
+	-- einfügen
 
+genNewShip::Int -> Int -> Ship
+genNewShip randomNo lOfShip = undefined
 
 ---------------------------------------------------------
 --  Hilfsfunktionen -------------------------------------
@@ -145,6 +153,8 @@ getTime =  round (unsafePerformIO getPOSIXTime) :: Int
 --ist Paramter >=5 wird False zurück gegeben, sonst True
 makeHorizontal::Int->Bool
 makeHorizontal a = (a `elem` [1..4])			
+
+
 
 ---------------------------------------------------------
 --  Ende Hilfsfunktionen --------------------------------
