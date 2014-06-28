@@ -5,6 +5,11 @@ import Data.Char (ord)
 import System.Random
 import Logic
 
+import System.IO.Unsafe
+import Data.Time.Clock.POSIX
+
+
+
 
 
 --ist ein Schiff der Liste komplett gesunken?
@@ -20,9 +25,17 @@ setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedSh
 
 --setzt durch Zufall alle Shiffe in das Feld
 generateMyShips::MyShips
-generateMyShips = generateNewShip [] 5
+generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 4 $ generateNewShip 0 4 $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
 
+generateMyShips' :: IO MyShips
+generateMyShips' = do
+    gen <- getStdGen (randomR (1,10))
+	(val, nextGen) <- next gen
+	let newShip = genNewShip val 2
+	-- einfügen
 
+genNewShip::Int -> Int -> Ship
+genNewShip randomNo lOfShip = undefined
 
 ---------------------------------------------------------
 --  Hilfsfunktionen -------------------------------------
@@ -67,11 +80,81 @@ changeStatusToDestroyed (x:xs) = (changeTupelToDestroyed x):changeStatusToDestro
 changeTupelToDestroyed::(Coord,Status)->(Coord,Status)
 changeTupelToDestroyed (c,s) = (c,Destroyed)
 
-generateNewShip::MyShips->Int->MyShips
-generateNewShip s i = ((generateRandomCoord i, Fail):[]):s
 
-generateRandomCoord::Int->Coord
-generateRandomCoord i = (2,9)
+----Es wird ein neues Schiff in die Liste eingefügt. Dann wird die Liste zurück gegeben
+generateNewShip::Int->Int->MyShips->MyShips
+generateNewShip a i [] = insertShip (getShip a i) []
+generateNewShip a i s = if (neu == s)
+                            then generateNewShip (a+1) i s
+                            else neu
+						where neu = (insertShip (getShip a i) s)
+					  
+-- Ein Schiff wird in die Liste eingefügt					  
+insertShip::Ship->MyShips->MyShips
+insertShip n s = if ((isCoordTaken n (makeOneList s [((1,1),Fail)]))) == False
+                         then n : s
+						 else s
+
+--Es wird eine lange Liste aus allen Schiffen erstellt						 
+makeOneList::MyShips->[(Coord,Status)]->[(Coord,Status)]
+makeOneList [] l = l
+makeOneList (x:[]) l = l ++ x
+makeOneList (x:xs) l = (makeOneList xs l) ++ x 
+
+--Sind alle Teile eines Schiffs innerhalb der Koordinaten
+isShipInField::Ship->Bool
+isShipInField (x:[]) = isCoordInField (x)
+isShipInField (x:xs) = isCoordInField (x) && isShipInField (xs)
+
+--ist die Koordinate innerhalb des Spielfeldes
+isCoordInField::(Coord, Status)->Bool
+isCoordInField ((x,y),_) = (x `elem` [1..10] && y `elem` [1..10])
+                   
+--Erstellt über einen Zufallsgenerator ein neues Schiff im Feld
+getShip::Int->Int->Ship
+getShip a i = if(isShipInField neu == True)
+                  then neu
+				  else getShip (a+1) i
+			  where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])					  
+
+--sind die Koordinaten schon im Spielfeld vergeben?			  
+isCoordTaken::[(Coord,Status)]->[(Coord,Status)]->Bool
+isCoordTaken [] a = False
+isCoordTaken (x:xs) a = if (x `elem` a) then True
+                                        else isCoordTaken xs a
+
+--Erstellt eine zufällige Koordinate im Spielfeld										
+generateRandomCoord::Int->Int->(Coord,Status)
+generateRandomCoord a i = ((getRandomNum (a), getRandomNum (a+2)), Fail)
+
+--hängt an die zufällig erstellte Koordinate den Rest des Schiffes
+--der Boolsche Wert gibt an ob horizontal oder vertikal
+makeFollowingCoords::Bool->Int->[(Coord, Status)]->[(Coord, Status)]
+makeFollowingCoords a i [] = []
+makeFollowingCoords a 0 x = x
+makeFollowingCoords a i l = makeFollowingCoords a (i-1) (l ++ (coordPlusOne a (last l)):[])
+-- makeFollowingCoords a i (x:[]) = makeFollowingCoords a (i-1) (coordPlusOne x:(x:[]))
+-- makeFollowingCoords a i (x:xs) = makeFollowingCoords a (i-1) (coordPlusOne x:(x:xs))
+
+--gibt eine Zufällige Zahl zwischen 1 und 10 zurück. Der Parameter dient als 'salt'
+getRandomNum::Int->Int
+getRandomNum x = head (randomRs (1,10) g)
+                 where g = mkStdGen (x-getTime)
+
+--Die übergebene Koordinate wird um eins hochgezählt. Paramter steht für Horizontal oder Vertikal
+coordPlusOne::Bool->(Coord,Status)->(Coord,Status)
+coordPlusOne False ((x,y),s) = ((x,y+1),s)
+coordPlusOne True ((x,y),s) = ((x+1,y),s)
+
+-- gibt die Systemzeit aus. Wichtig als Salt für den zufallsgenerator
+getTime::Int
+getTime =  round (unsafePerformIO getPOSIXTime) :: Int
+
+--ist Paramter >=5 wird False zurück gegeben, sonst True
+makeHorizontal::Int->Bool
+makeHorizontal a = (a `elem` [1..4])			
+
+
 
 ---------------------------------------------------------
 --  Ende Hilfsfunktionen --------------------------------

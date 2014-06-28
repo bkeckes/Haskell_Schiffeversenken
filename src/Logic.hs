@@ -1,7 +1,6 @@
 module Logic where
 
 import Datatypes
-
 import qualified Data.Map as M
 myships= [[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fromIntegral 2::Int,fromIntegral 3::Int),Fail)]]
 enemyField3 = M.fromList[((fromIntegral 1::Int,fromIntegral 1::Int),Fail),((fromIntegral 1::Int,fromIntegral 10::Int),Hit)]
@@ -57,3 +56,4 @@ insertShipsInField (s:ss) field = M.union (insertShipInField s field) (insertShi
 insertShipInField::Ship->EnemyField->EnemyField
 insertShipInField [] field = field
 insertShipInField (c:cs) field = M.union (M.insert (fst c) PartShip field) (insertShipInField cs field)
+
