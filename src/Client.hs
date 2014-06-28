@@ -1,52 +1,65 @@
-module Client where
+module Client1 where
 
-import Network.Socket
-import Control.Exception
-import Datatypes
+import Network
+import Data.Char (toLower)
+import Text.Regex.Posix ((=~))
+import System.IO (hGetLine,hClose,hPutStrLn,hSetBuffering,BufferMode(..),Handle,stdout)
+ 
+port = 8001 
 
-port = "3000"
+-- liesst eine IP-Addresse
+readIp = untilM (=~ "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")
+        (putStr "Enter IP address: " >> getLine)
+ 
+-- monadic `until`
+untilM p x = x >>= (\y -> if p y then return y else untilM p x) 
+-- wiederholt beide Aktionen bis eine erfŸllt ist
+while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y 
+-- monadic `if`
+ifM p t f  = p >>= (\p' -> if p' then t else f)
 
-main = withSocketsDo $ bracket getSocket sClose talk
-        where getSocket = do
-                (serveraddr:_) <- getAddrInfo Nothing (Just "127.0.0.1") (Just port)
-                s <- socket (addrFamily serveraddr) Datagram defaultProtocol
-                connect s (addrAddress serveraddr) >> return s
-              talk s = do
-                putStrLn $ "Welcome to Hit the Ships! \n Geben Sie Ihren Gegenspieler an: "
-               
-                --IP-Adresse des Gegners eingeben und an Server senden.
-                ipaddresse <- getLine
-                send s ipaddresse
-                putStrLn $ "Ihr Gegner ist:  " ++ ipaddresse ++ "."
-     
+-- client
+client = do
+        ip <- readIp
+        putStrLn "Connecting..."
+        h <- connectTo ip (PortNumber port)
+        putStrLn $ "Connected to " ++ ip ++ ":" ++ show port
+        hSetBuffering h LineBuffering
+        while2 (send h) (receive h)
+        hClose h
 
---Koordinaten empfangen von der GUI und an den Handler weiterleiten
+ 
+-- sending
+send h = do
+        putStr "Insert coordinates: "
+        input <- getLine
+        hPutStrLn h input
+        return $ null input
+ 
+-- receiving
+receive h = do
+        putStr "Receiving: "
+        input <- hGetLine h
+        putStrLn input
+        return $ null input
+        
+--Koordinaten an GUI senden (vom Handler empfangen)
 
-getCoord :: IO Coord
-getCoord  = 
-      do 
-          coord <- getLine
-          return (read coord :: Coord)
+printCoord :: Coord -> IO()
+printCoord coord = print ("Angriff auf " ++  show coord)     
+      
 
---Koordinaten und Status an GUI senden (vom Handler empfangen)
+--Koordinaten an GUI senden (vom Handler empfangen)
 
-sendCoordDestroyed :: Coord -> Coord -> IO()
-sendCoordDestroyed coordStart coordEnd = 
-                     print ("Zerstoert " ++ "Koordinaten: von " ++ show coordStart ++ " bis " ++ show coordEnd)     
+printCoordDestroyed :: Coord -> Coord -> IO()
+printCoordDestroyed coordStart coordEnd = 
+                     print ("Zerstoert! " ++ "Koordinaten: von " ++ show coordStart ++ " bis " ++ show coordEnd)     
       
          
---Status an beide Spieler Ÿbertragen (empfangen vom Handler)
+--Status an GUI Ÿbertragen (empfangen vom Handler)
 
-sendStatus :: Status -> IO() 
-sendStatus status =
-          if status == Hit
+printStatus :: Bool -> IO() 
+printStatus status =
+          if status == True
                      then  print ("Getroffen!")
-                     else 
-          if  status == Fail
-                     then print ("Nicht getroffen!")
-                     else print ("Error")
-
---Spielergebnis an beide Spieler Ÿbertragen (empfagenen vom Handler)     
-
---sendGameResult :: Status -> IO()
---sendGameResult status = 
+                     else  print ("Verfehlt!")
