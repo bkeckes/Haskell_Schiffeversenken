@@ -38,7 +38,7 @@ isCoordHit:: (Coord, Status) -> Bool
 isCoordHit (_,s) = if (s==Hit) then True
                                else False
 
---gib zerstörtes Shiff zurück							   
+--gib zerstörtes Shiff zurück                                                           
 getDestroyedShip::MyShips->Ship
 getDestroyedShip [] = []
 getDestroyedShip (x:[]) = if(isOneShipDestroyed x) == True
@@ -76,7 +76,7 @@ generateRandomCoord i = (2,9)
 ---------------------------------------------------------
 --  Ende Hilfsfunktionen --------------------------------
 ---------------------------------------------------------
-							   
+                                                           
 
 
 
@@ -84,8 +84,8 @@ generateRandomCoord i = (2,9)
 
 --gibt eine zufällige Coordinate aus der Liste zurück
 --getRandomCoord::[Coord]->Coord
---getRandomCoord:	g <- getStdGen
---				print $ take 10 (randomRs ('a', 'z') g)
+--getRandomCoord:        g <- getStdGen
+--                                print $ take 10 (randomRs ('a', 'z') g)
 
 --Diese Funktion erstellt ein Feld mit Status
 
