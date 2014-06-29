@@ -1,9 +1,11 @@
-module Client1 where
+module Client where
 
 import Network
 import Data.Char (toLower)
 import Text.Regex.Posix ((=~))
 import System.IO (hGetLine,hClose,hPutStrLn,hSetBuffering,BufferMode(..),Handle,stdout)
+import System.Environment
+import Datatypes
  
 port = 8001 
 
@@ -18,7 +20,7 @@ while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y
 -- monadic `if`
 ifM p t f  = p >>= (\p' -> if p' then t else f)
 
--- client
+-- client , stellt Verbindung zum Server her und sendet bzw. empfaengt Nachrichten vom/zum Server
 client = do
         ip <- readIp
         putStrLn "Connecting..."
@@ -29,19 +31,28 @@ client = do
         hClose h
 
  
--- sending
+-- senden
 send h = do
         putStr "Insert coordinates: "
         input <- getLine
         hPutStrLn h input
         return $ null input
  
--- receiving
+-- empfangen
 receive h = do
         putStr "Receiving: "
         input <- hGetLine h
         putStrLn input
         return $ null input
+        
+--Koordinaten vom Server erhalten
+receiveCoord :: t -> IO [()]
+receiveCoord coord = do
+                     receivedcoord <- getArgs
+                     mapM putStrLn receivedcoord
+
+--Status vom Server erhalten
+--receiveStatus ::      
         
 --Koordinaten an GUI senden (vom Handler empfangen)
 

@@ -1,4 +1,4 @@
-module Server2 where
+module Server where
 
 import Network
 import Data.Char (toLower)
@@ -40,6 +40,12 @@ receive h = do
         input <- hGetLine h
         putStrLn input
         return $ null input
+        
+--Koordinaten vom Client erhalten
+--receiveCoord ::  -> Coord   
+
+--Status vom Client erhalten
+--receiveStatus ::          
         
 --Senden von Koordinaten (handler)
 
