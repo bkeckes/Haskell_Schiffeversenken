@@ -18,6 +18,9 @@ main = do
     -- Client.client  = erfraegt Ip-Addresse und stellt Verbindung mit Server her
     Client.client
 
+    --Feld Spieler 1 initialisieren
+    
+    --Feld Spieler 2 initialisieren
 
 --gameLoop gameStatus = do
                 -- Koord einlesen vom Client

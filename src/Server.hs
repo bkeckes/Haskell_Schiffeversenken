@@ -24,9 +24,9 @@ server = do
         (h,host,port) <- accept sock
         putStrLn $ "Received connection from " ++ host ++ ":" ++ show port
         hSetBuffering h LineBuffering
-        --while2 (receive h) (send h)
-       -- hClose h
-       -- sClose sock
+        while2 (receive h) (send h)
+        hClose h
+        sClose sock
  
 -- sending
 send h = do
@@ -41,23 +41,31 @@ receive h = do
         return $ null input
         
 --Koordinaten vom Client erhalten
---receiveCoord coord = do
- --                    receivedcoord <- getArgs
- --                    print ("Hier stehen : " ++ receivedcoord)
-                    -- return $ map (read receivedcoord :: Coord)
-                    
+receiveCoord :: Handle -> IO String
+receiveCoord coord = do
+                 input <- hGetLine coord
+                 return input
+        
 --Status vom Client erhalten
---receiveStatus :: Bool -> IO ()  
-   
+receiveStatus ::  Handle -> IO Bool 
+receiveStatus status = do
+                 input <- hGetLine status
+                 return $ null input   
         
 --Senden von Koordinaten (handler)
-
+sendCoord :: Handle -> IO String
+sendCoord coord = do
+              input <- getLine
+              return input
 
 --Senden von Status an Client (handler)
---sendStatus :: Bool -> String
-sendStatus h = do
- --              Logic.isHitInShip input
- --              hPutStrLn h input
---               return $ null input
+sendStatus :: Handle -> IO Bool
+sendStatus status = do
+              input <- getLine
+              return $ null input
 
 --Senden von Start-und Endkoordinaten (handler)       
+--sendStartAndEndCoord :: Handle -> (Coord, Coord) -> IO String
+--sendStartAndEndCoord coord = do
+--                 input <- getLine
+--                 return input

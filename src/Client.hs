@@ -27,11 +27,11 @@ client = do
         h <- connectTo ip (PortNumber port)
         putStrLn $ "Connected to " ++ ip ++ ":" ++ show port
         hSetBuffering h LineBuffering
-       -- while2 (send h) (receive h)
+       -- while2 (sendCoord h) (receive h)
        -- hClose h
  
--- senden
-send h = do
+-- senden der Koordinaten die auf der Konsole eingegeben wurden an den Server
+sendCoord h = do
         putStr "Angriff: Geben Sie die Koordinaten an: "
         input <- getLine
         hPutStrLn h input
@@ -44,13 +44,17 @@ receive h = do
         return $ null input
         
 --Koordinaten vom Server erhalten
-receiveCoord :: t -> IO [()]
+receiveCoord :: Handle -> IO String
 receiveCoord coord = do
-                     receivedcoord <- getArgs
-                     mapM putStrLn receivedcoord
-
+                 input <- hGetLine coord
+                 return input
+        
 --Status vom Server erhalten
---receiveStatus ::      
+receiveStatus ::  Handle -> IO Bool 
+receiveStatus status = do
+                 input <- hGetLine status
+                 return $ null input      
+
         
 --Koordinaten an GUI senden (vom Handler empfangen)
 

@@ -30,9 +30,9 @@ generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 
 generateMyShips' :: IO MyShips
 generateMyShips' = do
     gen <- getStdGen (randomR (1,10))
-	(val, nextGen) <- next gen
-	let newShip = genNewShip val 2
-	-- einfügen
+        (val, nextGen) <- next gen
+        let newShip = genNewShip val 2
+        -- einfügen
 
 genNewShip::Int -> Int -> Ship
 genNewShip randomNo lOfShip = undefined
@@ -87,15 +87,15 @@ generateNewShip a i [] = insertShip (getShip a i) []
 generateNewShip a i s = if (neu == s)
                             then generateNewShip (a+1) i s
                             else neu
-						where neu = (insertShip (getShip a i) s)
-					  
--- Ein Schiff wird in die Liste eingefügt					  
+                                                where neu = (insertShip (getShip a i) s)
+                                          
+-- Ein Schiff wird in die Liste eingefügt                                          
 insertShip::Ship->MyShips->MyShips
 insertShip n s = if ((isCoordTaken n (makeOneList s [((1,1),Fail)]))) == False
                          then n : s
-						 else s
+                                                 else s
 
---Es wird eine lange Liste aus allen Schiffen erstellt						 
+--Es wird eine lange Liste aus allen Schiffen erstellt                                                 
 makeOneList::MyShips->[(Coord,Status)]->[(Coord,Status)]
 makeOneList [] l = l
 makeOneList (x:[]) l = l ++ x
@@ -114,16 +114,16 @@ isCoordInField ((x,y),_) = (x `elem` [1..10] && y `elem` [1..10])
 getShip::Int->Int->Ship
 getShip a i = if(isShipInField neu == True)
                   then neu
-				  else getShip (a+1) i
-			  where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])					  
+                                  else getShip (a+1) i
+                          where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])                                          
 
---sind die Koordinaten schon im Spielfeld vergeben?			  
+--sind die Koordinaten schon im Spielfeld vergeben?                          
 isCoordTaken::[(Coord,Status)]->[(Coord,Status)]->Bool
 isCoordTaken [] a = False
 isCoordTaken (x:xs) a = if (x `elem` a) then True
                                         else isCoordTaken xs a
 
---Erstellt eine zufällige Koordinate im Spielfeld										
+--Erstellt eine zufällige Koordinate im Spielfeld                                                                                
 generateRandomCoord::Int->Int->(Coord,Status)
 generateRandomCoord a i = ((getRandomNum (a), getRandomNum (a+2)), Fail)
 
@@ -152,7 +152,7 @@ getTime =  round (unsafePerformIO getPOSIXTime) :: Int
 
 --ist Paramter >=5 wird False zurück gegeben, sonst True
 makeHorizontal::Int->Bool
-makeHorizontal a = (a `elem` [1..4])			
+makeHorizontal a = (a `elem` [1..4])                        
 
 
 
