@@ -4,16 +4,15 @@ import Network
 import Data.Char (toLower)
 import Text.Regex.Posix ((=~))
 import System.IO (hGetLine,hClose,hPutStrLn,hSetBuffering,BufferMode(..),Handle,stdout)
- 
-port = 8001 -- a nice port number
- 
--- reads in an ip address
-readIp = untilM (=~ "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")
-        (putStr "Enter IP address: " >> getLine)
+import System.Environment
+import Datatypes
+import Logic
+
+port = 8001 
  
 -- monadic `until`
 untilM p x = x >>= (\y -> if p y then return y else untilM p x) 
--- repeats two actions until either returns true
+-- wiederholt beide Aktionen bis eine erfŸllt ist
 while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y 
 -- monadic `if`
 ifM p t f  = p >>= (\p' -> if p' then t else f)
@@ -25,9 +24,9 @@ server = do
         (h,host,port) <- accept sock
         putStrLn $ "Received connection from " ++ host ++ ":" ++ show port
         hSetBuffering h LineBuffering
-        while2 (receive h) (send h)
-        hClose h
-        sClose sock
+        --while2 (receive h) (send h)
+       -- hClose h
+       -- sClose sock
  
 -- sending
 send h = do
@@ -42,15 +41,23 @@ receive h = do
         return $ null input
         
 --Koordinaten vom Client erhalten
---receiveCoord ::  -> Coord   
-
+--receiveCoord coord = do
+ --                    receivedcoord <- getArgs
+ --                    print ("Hier stehen : " ++ receivedcoord)
+                    -- return $ map (read receivedcoord :: Coord)
+                    
 --Status vom Client erhalten
---receiveStatus ::          
+--receiveStatus :: Bool -> IO ()  
+   
         
 --Senden von Koordinaten (handler)
 
 
 --Senden von Status an Client (handler)
-
+--sendStatus :: Bool -> String
+sendStatus h = do
+ --              Logic.isHitInShip input
+ --              hPutStrLn h input
+--               return $ null input
 
 --Senden von Start-und Endkoordinaten (handler)       

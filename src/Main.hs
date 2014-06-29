@@ -4,7 +4,6 @@ import System.IO (hSetBuffering, BufferMode(NoBuffering), stdout)
 import Datatypes
 import UserInterface
 import Server
-import War
 import Client
 import qualified Data.Map as M
 
@@ -16,7 +15,7 @@ main :: IO ()
 main = do
 
     putStrLn "Willkommen bei Hit the Ships!"
-    -- Client.client  = erfraegt Ip-Addresse und sendet und empfaengt nachrichten
+    -- Client.client  = erfraegt Ip-Addresse und stellt Verbindung mit Server her
     Client.client
 
 
@@ -53,7 +52,7 @@ main = do
 
 
 
---Client.printCoord = Koordinaten an GUI senden (vom Server empfangen an Client gesendet)
+-- Client.printCoord = Koordinaten an GUI senden (vom Server empfangen an Client gesendet)
 
 -- Client.printCoordDestroyed = Koordinaten an GUI senden 
 

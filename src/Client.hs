@@ -15,7 +15,7 @@ readIp = untilM (=~ "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")
  
 -- monadic `until`
 untilM p x = x >>= (\y -> if p y then return y else untilM p x) 
--- wiederholt beide Aktionen bis eine erfŸllt ist
+-- wiederholt beide Aktionen bis eine erfÙllt ist
 while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y 
 -- monadic `if`
 ifM p t f  = p >>= (\p' -> if p' then t else f)
@@ -27,20 +27,18 @@ client = do
         h <- connectTo ip (PortNumber port)
         putStrLn $ "Connected to " ++ ip ++ ":" ++ show port
         hSetBuffering h LineBuffering
-        while2 (send h) (receive h)
-        hClose h
-
+       -- while2 (send h) (receive h)
+       -- hClose h
  
 -- senden
 send h = do
-        putStr "Insert coordinates: "
+        putStr "Angriff: Geben Sie die Koordinaten an: "
         input <- getLine
         hPutStrLn h input
         return $ null input
  
 -- empfangen
 receive h = do
-        putStr "Receiving: "
         input <- hGetLine h
         putStrLn input
         return $ null input
@@ -67,7 +65,7 @@ printCoordDestroyed coordStart coordEnd =
                      print ("Zerstoert! " ++ "Koordinaten: von " ++ show coordStart ++ " bis " ++ show coordEnd)     
       
          
---Status an GUI Ÿbertragen (empfangen vom Handler)
+--Status an GUI uebertragen (empfangen vom Handler)
 
 printStatus :: Bool -> IO() 
 printStatus status =
