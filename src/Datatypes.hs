@@ -26,9 +26,8 @@ data Status = Fail | Hit | Destroyed | PartShip deriving (Eq,Show)
 
 type EnemyField  = M.Map Coord Status
 
--- data Game = Game {
-      -- myField :: ...
-          -- enemyField :: ...
-          -- sock :: ...
-          -- myShoot :: Bool
-    -- }
+data Game = Game {
+      myField :: EnemyField,
+      enemyField :: EnemyField,
+      myShips::MyShips
+      } deriving (Eq,Show)
