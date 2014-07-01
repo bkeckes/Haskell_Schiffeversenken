@@ -5,6 +5,9 @@ import Datatypes
 import UserInterface
 import Server
 import Client
+import War
+import Logic
+
 import qualified Data.Map as M
 
             
