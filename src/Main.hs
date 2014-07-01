@@ -11,24 +11,26 @@ import Logic
 import qualified Data.Map as M
 
 ships = generateMyShips
-myfield = initializeField myships
+myfield = initializeField ships
 gameStatus = Game { myField = myfield, enemyField=M.empty, myShips=ships }	--gameLoop gamestatus
-        
+myTurn=False
            
 --enemyField = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed),((9,3),Hit)]
 
 main :: IO ()
 main = do
-
     putStrLn "Willkommen bei Hit the Ships!"
     -- Client.client  = erfraegt Ip-Addresse und stellt Verbindung mit Server her
     Client.client
-    
+   -- gameLoop gameStatus
     --Feld Spieler 1 initialisieren
     
     --Feld Spieler 2 initialisieren
 
---gameLoop gameStatus = do
+gameLoop :: Game -> IO ()
+gameLoop gameStatus = do
+    print(gameStatus)
+
                 -- Koord einlesen vom Client
                 -- Client.send
                 -- Schuss übertragen an Server und dann weiterleiten an Logic
