@@ -5,7 +5,7 @@ import qualified Data.Map as M
 --Coordinate bestehend aus Buchstaben und Zahl
 
 -- type Coord = (Char,Int)
-	
+        
 
 type Coord = (Int,Int)
 
@@ -28,7 +28,7 @@ type EnemyField  = M.Map Coord Status
 
 -- data Game = Game {
       -- myField :: ...
-	  -- enemyField :: ...
-	  -- sock :: ...
-	  -- myShoot :: Bool
+          -- enemyField :: ...
+          -- sock :: ...
+          -- myShoot :: Bool
     -- }
