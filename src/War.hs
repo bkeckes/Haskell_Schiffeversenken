@@ -28,21 +28,13 @@ setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedSh
 generateMyShips::MyShips
 generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 4 $ generateNewShip 0 4 $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
 
-<<<<<<< HEAD
+
 -- generateMyShips' :: IO MyShips
 -- generateMyShips' = do
-    -- gen <- getStdGen (randomR (1,10))
-	-- (val, nextGen) <- next gen
-	-- let newShip = genNewShip val 2
-	--einfügen
-=======
-generateMyShips' :: IO MyShips
-generateMyShips' = do
-    gen <- getStdGen (randomR (1,10))
-        (val, nextGen) <- next gen
-        let newShip = genNewShip val 2
-        -- einfügen
->>>>>>> 8cfcdc6639fb4b20b5f63952cec96f7d549dc06d
+-- gen <- getStdGen (randomR (1,10))
+-- (val, nextGen) <- next gen	
+-- let newShip = genNewShip val 2
+--einfügen
 
 -- genNewShip::Int -> Int -> Ship
 -- genNewShip randomNo lOfShip = undefined
@@ -101,7 +93,7 @@ generateNewShip a i [] = insertShip (getShip a i) []
 generateNewShip a i s = if (neu == s)
                             then generateNewShip (a+1) i s
                             else neu
-                                                where neu = (insertShip (getShip a i) s)
+                            where neu = (insertShip (getShip a i) s)
                                           
 -- Ein Schiff wird in die Liste eingefügt                                          
 insertShip::Ship->MyShips->MyShips
@@ -128,8 +120,8 @@ isCoordInField ((x,y),_) = (x `elem` [1..10] && y `elem` [1..10])
 getShip::Int->Int->Ship
 getShip a i = if(isShipInField neu == True)
                   then neu
-                                  else getShip (a+1) i
-                          where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])                                          
+                  else getShip (a+1) i
+                  where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])                                          
 
 --sind die Koordinaten schon im Spielfeld vergeben?                          
 isCoordTaken::[(Coord,Status)]->[(Coord,Status)]->Bool
@@ -164,17 +156,17 @@ coordPlusOne True ((x,y),s) = ((x+1,y),s)
 getTime::Int
 getTime =  round (unsafePerformIO getPOSIXTime) :: Int
 
-getInit::IO ()
-getInit = do
-            init <- fmap fromInteger $ getClockTime >>= (\(TOD sec _) -> return sec)
-            let gen = mkStdGen init
-            let randoms = randomRs (1,10) gen -- erzeuge unendliche Liste von Zufallswerten
+-- getInit::IO ()
+-- getInit = do
+            -- init <- fmap fromInteger $ getClockTime >>= (\(TOD sec _) -> return sec)
+            -- let gen = mkStdGen init
+            -- let randoms = randomRs (1,10) gen -- erzeuge unendliche Liste von Zufallswerten
                                     		  -- zwischen 1 und 10
             -- let randomPs = randomPairs randoms -- generiere Paare aus Zufallszahlen
             -- let field = genRandomField randomPs
             -- print $ field == nub field -- Field enthält keine doppelten, nur zum Testen
             -- print field
-            print 2
+           -- print 2
 
 --ist Paramter >=5 wird False zurück gegeben, sonst True
 makeHorizontal::Int->Bool
