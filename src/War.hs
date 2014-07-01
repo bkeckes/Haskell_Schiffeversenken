@@ -7,7 +7,8 @@ import Logic
 
 import System.IO.Unsafe
 import Data.Time.Clock.POSIX
-
+import System.Random
+import System.Time (getClockTime, ClockTime(TOD))
 
 
 
@@ -27,15 +28,19 @@ setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedSh
 generateMyShips::MyShips
 generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 4 $ generateNewShip 0 4 $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
 
-generateMyShips' :: IO MyShips
-generateMyShips' = do
-    gen <- getStdGen (randomR (1,10))
-	(val, nextGen) <- next gen
-	let newShip = genNewShip val 2
-	-- einfügen
+-- generateMyShips' :: IO MyShips
+-- generateMyShips' = do
+    -- gen <- getStdGen (randomR (1,10))
+	-- (val, nextGen) <- next gen
+	-- let newShip = genNewShip val 2
+	--einfügen
 
-genNewShip::Int -> Int -> Ship
-genNewShip randomNo lOfShip = undefined
+-- genNewShip::Int -> Int -> Ship
+-- genNewShip randomNo lOfShip = undefined
+
+-- eins::IO Integer
+-- eins =  fromInteger $ getClockTime >>= (\(TOD sec _) -> return sec)
+	
 
 ---------------------------------------------------------
 --  Hilfsfunktionen -------------------------------------
@@ -149,6 +154,18 @@ coordPlusOne True ((x,y),s) = ((x+1,y),s)
 -- gibt die Systemzeit aus. Wichtig als Salt für den zufallsgenerator
 getTime::Int
 getTime =  round (unsafePerformIO getPOSIXTime) :: Int
+
+getInit::IO ()
+getInit = do
+            init <- fmap fromInteger $ getClockTime >>= (\(TOD sec _) -> return sec)
+            let gen = mkStdGen init
+            let randoms = randomRs (1,10) gen -- erzeuge unendliche Liste von Zufallswerten
+                                    		  -- zwischen 1 und 10
+            -- let randomPs = randomPairs randoms -- generiere Paare aus Zufallszahlen
+            -- let field = genRandomField randomPs
+            -- print $ field == nub field -- Field enthält keine doppelten, nur zum Testen
+            -- print field
+            print 2
 
 --ist Paramter >=5 wird False zurück gegeben, sonst True
 makeHorizontal::Int->Bool
