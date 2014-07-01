@@ -10,7 +10,10 @@ import Logic
 
 import qualified Data.Map as M
 
-            
+ships = generateMyShips
+myfield = initializeField myships
+gameStatus = Game { myField = myfield, enemyField=M.empty, myShips=ships }	--gameLoop gamestatus
+        
            
 --enemyField = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed),((9,3),Hit)]
 
@@ -20,7 +23,7 @@ main = do
     putStrLn "Willkommen bei Hit the Ships!"
     -- Client.client  = erfraegt Ip-Addresse und stellt Verbindung mit Server her
     Client.client
-
+    
     --Feld Spieler 1 initialisieren
     
     --Feld Spieler 2 initialisieren
