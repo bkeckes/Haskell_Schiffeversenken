@@ -27,7 +27,15 @@ setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedSh
 generateMyShips::MyShips
 generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 4 $ generateNewShip 0 4 $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
 
+generateMyShips' :: IO MyShips
+generateMyShips' = do
+    gen <- getStdGen (randomR (1,10))
+        (val, nextGen) <- next gen
+        let newShip = genNewShip val 2
+        -- einfügen
 
+genNewShip::Int -> Int -> Ship
+genNewShip randomNo lOfShip = undefined
 
 ---------------------------------------------------------
 --  Hilfsfunktionen -------------------------------------
@@ -43,7 +51,7 @@ isCoordHit:: (Coord, Status) -> Bool
 isCoordHit (_,s) = if (s==Hit) then True
                                else False
 
---gib zerstörtes Shiff zurück							   
+--gib zerstörtes Shiff zurück                                                           
 getDestroyedShip::MyShips->Ship
 getDestroyedShip [] = []
 getDestroyedShip (x:[]) = if(isOneShipDestroyed x) == True
@@ -79,15 +87,15 @@ generateNewShip a i [] = insertShip (getShip a i) []
 generateNewShip a i s = if (neu == s)
                             then generateNewShip (a+1) i s
                             else neu
-						where neu = (insertShip (getShip a i) s)
-					  
--- Ein Schiff wird in die Liste eingefügt					  
+                                                where neu = (insertShip (getShip a i) s)
+                                          
+-- Ein Schiff wird in die Liste eingefügt                                          
 insertShip::Ship->MyShips->MyShips
 insertShip n s = if ((isCoordTaken n (makeOneList s [((1,1),Fail)]))) == False
                          then n : s
-						 else s
+                                                 else s
 
---Es wird eine lange Liste aus allen Schiffen erstellt						 
+--Es wird eine lange Liste aus allen Schiffen erstellt                                                 
 makeOneList::MyShips->[(Coord,Status)]->[(Coord,Status)]
 makeOneList [] l = l
 makeOneList (x:[]) l = l ++ x
@@ -106,16 +114,16 @@ isCoordInField ((x,y),_) = (x `elem` [1..10] && y `elem` [1..10])
 getShip::Int->Int->Ship
 getShip a i = if(isShipInField neu == True)
                   then neu
-				  else getShip (a+1) i
-			  where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])					  
+                                  else getShip (a+1) i
+                          where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])                                          
 
---sind die Koordinaten schon im Spielfeld vergeben?			  
+--sind die Koordinaten schon im Spielfeld vergeben?                          
 isCoordTaken::[(Coord,Status)]->[(Coord,Status)]->Bool
 isCoordTaken [] a = False
 isCoordTaken (x:xs) a = if (x `elem` a) then True
                                         else isCoordTaken xs a
 
---Erstellt eine zufällige Koordinate im Spielfeld										
+--Erstellt eine zufällige Koordinate im Spielfeld                                                                                
 generateRandomCoord::Int->Int->(Coord,Status)
 generateRandomCoord a i = ((getRandomNum (a), getRandomNum (a+2)), Fail)
 
@@ -144,12 +152,14 @@ getTime =  round (unsafePerformIO getPOSIXTime) :: Int
 
 --ist Paramter >=5 wird False zurück gegeben, sonst True
 makeHorizontal::Int->Bool
-makeHorizontal a = (a `elem` [1..4])			
+makeHorizontal a = (a `elem` [1..4])                        
+
+
 
 ---------------------------------------------------------
 --  Ende Hilfsfunktionen --------------------------------
 ---------------------------------------------------------
-							   
+                                                           
 
 
 
@@ -157,8 +167,8 @@ makeHorizontal a = (a `elem` [1..4])
 
 --gibt eine zufällige Coordinate aus der Liste zurück
 --getRandomCoord::[Coord]->Coord
---getRandomCoord:	g <- getStdGen
---				print $ take 10 (randomRs ('a', 'z') g)
+--getRandomCoord:        g <- getStdGen
+--                                print $ take 10 (randomRs ('a', 'z') g)
 
 --Diese Funktion erstellt ein Feld mit Status
 
