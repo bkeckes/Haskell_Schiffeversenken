@@ -22,12 +22,13 @@ type Ship = [(Coord, Status)]
 type MyShips = [Ship] 
 
 data Status = Fail | Hit | Destroyed | PartShip deriving (Eq,Show)
-
+data Turn = Me | Enemy | Again deriving (Eq,Show)
 
 type EnemyField  = M.Map Coord Status
 
 data Game = Game {
       myField :: EnemyField,
       enemyField :: EnemyField,
-      myShips::MyShips
+      myShips::MyShips,
+      turn::Turn
       } deriving (Eq,Show)

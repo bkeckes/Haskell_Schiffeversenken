@@ -10,15 +10,15 @@ import Logic
 
 import qualified Data.Map as M
 
-ships = generateMyShips
+ships = [[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fromIntegral 1::Int,fromIntegral 3::Int),PartShip),((fromIntegral 5::Int,fromIntegral 3::Int),PartShip)]]--generateMyShips
 myfield = initializeField ships
-gameStatus = Game { myField = myfield, enemyField=M.empty, myShips=ships }	--gameLoop gamestatus
-myTurn=True
-pseudoCoords=(8,7)
+gameStatus = Game { myField = myfield, enemyField=M.empty, myShips=ships, turn=Enemy }	--gameLoop gamestatus
+myTurn=False
+pseudoCoords=(5,3)
+fluchtwert=(2,2)
 pseudoStatus=Hit--Destroyed
 anfang=(1,2)
 ende=(1,5)
-fluchtwert=(-1,-1)
            
 --enemyField = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed),((9,3),Hit)]
 
@@ -34,32 +34,53 @@ main = do
 
 gameLoop :: Game -> IO ()
 gameLoop gameStatus = do
+    if ((turn gameStatus)==Again  )
+        then putStrLn("Feld bereits gespielt, bitte nochmal versuchen")
+        else putStrLn("Feld noch nicht gespielt")
+    
     printMyField $ myField newGameStatus
     printMyField $ enemyField newGameStatus
-	where    newGameStatus= if myTurn
+    if isHit pseudoCoords (myShips gameStatus)
+		then putStrLn("hit")
+		else putStrLn("fail")
+   -- gameLoop newGameStatus	
+	where   newGameStatus= if ((turn gameStatus)==Me ||(turn gameStatus)==Again  )
                                 then myturn gameStatus
-                                else notmyturn gameStatus
+                                else notmyturn gameStatus coords
+                                  where   coords= if ((turn gameStatus)==Enemy  )
+	                                                then pseudoCoords
+	                                                else fluchtwert
 	
-	--gameLoop newGameStatus	
     
     
 myturn :: Game->Game
-myturn gameStatus=if pseudoS==Destroyed
-                      then Game { myField =  (myField gameStatus), enemyField=(insertStatuus anfangK endeK Destroyed $enemyField gameStatus), myShips=  (myShips gameStatus)}
-                      else Game { myField =  (myField gameStatus), enemyField=(insertStatus pseudoS (enemyField gameStatus) pseudoC), myShips= (myShips gameStatus)}
-						where    
-							pseudoS=pseudoStatus  --Status der empfangen wurde
-							pseudoC = pseudoCoords  --Koordinaten die eingelesen wurden
-							anfangK = if pseudoS==Destroyed
-										then anfang --aus Netzwerk
-										else fluchtwert
-							endeK = if pseudoS==Destroyed
-									    then ende --aus Netzwerk
-										else fluchtwert
-    
-notmyturn :: Game->Game
-notmyturn gameStatus=gameStatus
-    
+myturn gameStatus=if (coordIsPlayed pseudoC (enemyField gameStatus))
+					  then Game {myField =  (myField gameStatus), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Again}
+					  else if pseudoS==Destroyed
+                              then Game { myField =  (myField gameStatus), enemyField=(insertStatuus (anfangK,endeK) Destroyed $enemyField gameStatus), myShips=  (myShips gameStatus),turn=Enemy}
+							  else Game { myField =  (myField gameStatus), enemyField=(insertStatus pseudoS (enemyField gameStatus) pseudoC), myShips= (myShips gameStatus), turn=Enemy}
+					          	where    
+								pseudoS=pseudoStatus  --Status der empfangen wurde
+								pseudoC = pseudoCoords  --Koordinaten die eingelesen wurden
+								anfangK = if pseudoS==Destroyed
+											then anfang --aus Netzwerk
+											else fluchtwert
+								endeK = if pseudoS==Destroyed
+											then ende --aus Netzwerk
+											else fluchtwert
+								h=if coordIsPlayed pseudoC (enemyField gameStatus)
+									then print("Koordinate wurde schon gespielt, bitte nochmal")
+									else print("yees")
+									
+									
+notmyturn :: Game->Coord->Game
+notmyturn gameStatus coords=if(isHit coords (myShips gameStatus))
+                                then if isAShipDestroyed newShips 
+                                         then Game{myField =  (insertStatuus  (setShipToDestroyed newShips) Destroyed (myField gameStatus)), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
+                                         else Game{myField =  (insertStatus Hit (myField gameStatus) coords), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
+                                else Game{myField =  (insertStatus Fail (myField gameStatus) coords), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
+							   where newShips = shootField coords (myShips gameStatus)
+
     --if myTurn
       --  then --Koords einlesen
              --In ship array enthalten-> coordIsPlayed von Logic.hs
