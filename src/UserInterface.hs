@@ -34,7 +34,7 @@ printShoot x
     |  x ==Just Fail = "   O"
 	|  x ==Just Hit = "   X"
 	|  x ==Just Destroyed = "   #"
-  
+    |  x ==Just PartShip ="   +"
 
 -- Druckt die Reihen
 printShoot' :: EnemyField -> Coord -> String
