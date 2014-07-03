@@ -10,11 +10,11 @@ import Logic
 
 import qualified Data.Map as M
 
-ships = [[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fromIntegral 1::Int,fromIntegral 3::Int),PartShip),((fromIntegral 5::Int,fromIntegral 3::Int),PartShip)]]--generateMyShips
+ships = [[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fromIntegral 1::Int,fromIntegral 3::Int),Hit)]]--generateMyShips
 myfield = initializeField ships
 gameStatus = Game { myField = myfield, enemyField=M.empty, myShips=ships, turn=Enemy }	--gameLoop gamestatus
 myTurn=False
-pseudoCoords=(5,3)
+pseudoCoords=(1,3)
 fluchtwert=(2,2)
 pseudoStatus=Hit--Destroyed
 anfang=(1,2)
@@ -40,6 +40,9 @@ gameLoop gameStatus = do
     
     printMyField $ myField newGameStatus
     printMyField $ enemyField newGameStatus
+    print(myShips newGameStatus)
+    print(myField newGameStatus)
+
     if isHit pseudoCoords (myShips gameStatus)
 		then putStrLn("hit")
 		else putStrLn("fail")
@@ -76,10 +79,13 @@ myturn gameStatus=if (coordIsPlayed pseudoC (enemyField gameStatus))
 notmyturn :: Game->Coord->Game
 notmyturn gameStatus coords=if(isHit coords (myShips gameStatus))
                                 then if isAShipDestroyed newShips 
-                                         then Game{myField =  (insertStatuus  (setShipToDestroyed newShips) Destroyed (myField gameStatus)), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
+                                         then Game{myField =  (insertStatuus  destroyedCoords Destroyed (myField gameStatus)), enemyField=(enemyField gameStatus), myShips=  destroyedShip,turn=Me}
                                          else Game{myField =  (insertStatus Hit (myField gameStatus) coords), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
                                 else Game{myField =  (insertStatus Fail (myField gameStatus) coords), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
-							   where newShips = shootField coords (myShips gameStatus)
+							   where 
+							   newShips = shootField coords (myShips gameStatus)
+							   destroyedCoords = (getCoordsFromDestroyed newShips)
+							   destroyedShip = (setShipToDestroyed newShips)
 
     --if myTurn
       --  then --Koords einlesen

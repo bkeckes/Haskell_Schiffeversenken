@@ -55,5 +55,5 @@ insertShipsInField (s:ss) field = M.union (insertShipInField s field) (insertShi
 
 insertShipInField::Ship->EnemyField->EnemyField
 insertShipInField [] field = field
-insertShipInField (c:cs) field = M.union (M.insert (fst c) PartShip field) (insertShipInField cs field)
+insertShipInField (c:cs) field = M.union (M.insert (fst c) Hit field) (insertShipInField cs field)
 
