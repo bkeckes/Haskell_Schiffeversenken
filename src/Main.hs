@@ -10,11 +10,11 @@ import Logic
 
 import qualified Data.Map as M
 
-ships = [[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fromIntegral 1::Int,fromIntegral 3::Int),Hit)]]--generateMyShips
+ships =generateMyShips -- [[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fromIntegral 1::Int,fromIntegral 3::Int),Hit)]]--generateMyShips
 myfield = initializeField ships
 gameStatus = Game { myField = myfield, enemyField=M.empty, myShips=ships, turn=Enemy }	--gameLoop gamestatus
 myTurn=False
-pseudoCoords=(1,3)
+pseudoCoords=(1,7)
 fluchtwert=(2,2)
 pseudoStatus=Hit--Destroyed
 anfang=(1,2)
@@ -40,12 +40,12 @@ gameLoop gameStatus = do
     
     printMyField $ myField newGameStatus
     printMyField $ enemyField newGameStatus
-    print(myShips newGameStatus)
-    print(myField newGameStatus)
+    --print(myShips newGameStatus)
+   -- print(myField newGameStatus)
 
-    if isHit pseudoCoords (myShips gameStatus)
-		then putStrLn("hit")
-		else putStrLn("fail")
+  --  if isHit pseudoCoords (myShips gameStatus)
+	--	then putStrLn("hit")
+	--	else putStrLn("fail")
    -- gameLoop newGameStatus	
 	where   newGameStatus= if ((turn gameStatus)==Me ||(turn gameStatus)==Again  )
                                 then myturn gameStatus
@@ -58,7 +58,7 @@ gameLoop gameStatus = do
     
 myturn :: Game->Game
 myturn gameStatus=if (coordIsPlayed pseudoC (enemyField gameStatus))
-					  then Game {myField =  (myField gameStatus), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Again}
+					  then gameStatus {turn=Again}
 					  else if pseudoS==Destroyed
                               then Game { myField =  (myField gameStatus), enemyField=(insertStatuus (anfangK,endeK) Destroyed $enemyField gameStatus), myShips=  (myShips gameStatus),turn=Enemy}
 							  else Game { myField =  (myField gameStatus), enemyField=(insertStatus pseudoS (enemyField gameStatus) pseudoC), myShips= (myShips gameStatus), turn=Enemy}
