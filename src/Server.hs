@@ -12,7 +12,7 @@ port = 8001
  
 -- monadic `until`
 untilM p x = x >>= (\y -> if p y then return y else untilM p x) 
--- wiederholt beide Aktionen bis eine erfŸllt ist
+-- wiederholt beide Aktionen bis eine erfÙllt ist
 while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y 
 -- monadic `if`
 ifM p t f  = p >>= (\p' -> if p' then t else f)
@@ -39,24 +39,19 @@ receive h = do
         input <- hGetLine h
         putStrLn input
         return $ null input
-        
---Koordinaten vom Client erhalten
-receiveCoord :: Handle -> IO String
-receiveCoord coord = do
-                 input <- hGetLine coord
-                 return input
+       
         
 --Status vom Client erhalten
-receiveStatus ::  Handle -> IO Bool 
-receiveStatus status = do
-                 input <- hGetLine status
-                 return $ null input   
+--receiveStatus :: IO Bool -> Status
+--receiveStatus status = do
+--                 input <- hGetLine status
+--                 return $ null input   
         
 --Senden von Koordinaten (handler)
-sendCoord :: Handle -> IO String
-sendCoord coord = do
-              input <- getLine
-              return input
+--sendCoord :: Handle -> IO String
+--sendCoord coord = do
+--              input <- getLine
+--              return input
 
 --Senden von Status an Client (handler)
 sendStatus :: Handle -> IO Bool
