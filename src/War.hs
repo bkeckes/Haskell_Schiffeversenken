@@ -49,6 +49,8 @@ generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 
 ---------------------------------------------------------
 --  Hilfsfunktionen -------------------------------------
 ---------------------------------------------------------
+
+-- Tauscht das Schiff in der Liste aus
 changeShip::MyShips->Ship->MyShips
 changeShip [] _ = []
 changeShip (x:[]) s = if(isSameShip x s)
@@ -57,10 +59,14 @@ changeShip (x:[]) s = if(isSameShip x s)
 changeShip (x:xs) s = if(isSameShip x s)
                         then s:xs
                         else x : ( changeShip xs s )
-						
-isSameShip::Ship->Ship->Bool
-isSameShip (x:xs) (y:ys) = isSameCoord x y
 
+--Vergleicht die Anfangskoordinaten zweier Schiffe						
+isSameShip::Ship->Ship->Bool
+isSameShip [] _ = True
+isSameShip _ [] = True
+isSameShip (x:xs) (y:ys) = isSameCoord x y && (isSameShip xs ys)
+
+--Vergleicht Koordinaten
 isSameCoord::(Coord,Status)->(Coord,Status)->Bool
 isSameCoord (a,_) (b,_) = a==b
 
