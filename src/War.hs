@@ -22,7 +22,7 @@ isAShipDestroyed (x:xs) = (hasShipState Hit x) || (isAShipDestroyed xs)
 --gibt Anfang und Ende eines zerstörtem Schiffs zurück
 --und setzt Status auf destroyed
 getCoordsFromDestroyed::MyShips->(Coord,Coord)
-getCoordsFromDestroyed ships = getStartAndEnd $ getShipWithState Destroyed ships
+getCoordsFromDestroyed ships = getStartAndEnd $ getShipWithState Hit ships
 
 setShipToDestroyed::MyShips->MyShips
 setShipToDestroyed ships = changeShip ships $ changeStatusToDestroyed $ getShipWithState Hit ships
