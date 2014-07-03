@@ -39,28 +39,35 @@ receive h = do
         input <- hGetLine h
         putStrLn input
         return $ null input
-       
-        
+            
 --Status vom Client erhalten
---receiveStatus :: IO Bool -> Status
---receiveStatus status = do
---                 input <- hGetLine status
---                 return $ null input   
-        
+receiveStatus :: Handle -> IO String
+receiveStatus status = do
+                 input <- hGetLine status
+                 return input
+                 
+parseTyp :: String -> Status
+parseTyp status = 
+       |status = "" = Nothing
+       |status = "fail" = Fail
+       |status = "hit" = Hit
+       |status =  "destroyed" = Destroyed
+       |otherwise = Error   
+               
 --Senden von Koordinaten (handler)
---sendCoord :: Handle -> IO String
---sendCoord coord = do
---              input <- getLine
---              return input
+sendCoord :: Coord -> IO String
+sendCoord coord = do
+              coord <- getLine
+              return coord
 
 --Senden von Status an Client (handler)
-sendStatus :: Handle -> IO Bool
+sendStatus :: Status -> IO String
 sendStatus status = do
-              input <- getLine
-              return $ null input
+              status <- getLine
+              return status
 
 --Senden von Start-und Endkoordinaten (handler)       
---sendStartAndEndCoord :: Handle -> (Coord, Coord) -> IO String
---sendStartAndEndCoord coord = do
---                 input <- getLine
---                 return input
+sendStartAndEndCoord ::(Coord, Coord) -> IO String
+sendStartAndEndCoord coord = do
+                 coord <- getLine
+                 return coord

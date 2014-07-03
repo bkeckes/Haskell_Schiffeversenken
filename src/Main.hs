@@ -28,9 +28,7 @@ main = do
     -- Client.client  = erfraegt Ip-Addresse und stellt Verbindung mit Server her
     --Client.client
     gameLoop gameStatus
-    --Feld Spieler 1 initialisieren
-    
-    --Feld Spieler 2 initialisieren
+ 
 
 gameLoop :: Game -> IO ()
 gameLoop gameStatus = do
@@ -43,7 +41,7 @@ gameLoop gameStatus = do
     if isHit pseudoCoords (myShips gameStatus)
 		then putStrLn("hit")
 		else putStrLn("fail")
-   -- gameLoop newGameStatus	
+   --gameLoop newGameStatus	
 	where   newGameStatus= if ((turn gameStatus)==Me ||(turn gameStatus)==Again  )
                                 then myturn gameStatus
                                 else notmyturn gameStatus coords

@@ -36,9 +36,6 @@ sendCoord h = do
         input <- getLine
         hPutStrLn h input
         return $ null input
-   
---parseCoord :: IO Integer -> Coord        
---parseCoord input = do 
             
 -- empfangen
 receive h = do
@@ -47,20 +44,17 @@ receive h = do
         return $ null input
               
                   
---Status vom Server erhalten
-receiveStatus ::IO Bool -> Status
-receiveStatus h = 
---                if (h == True)
---                        then Hit
---                        else Fail
---          return $ null input
-  
-  
-        
+--Daten vom Server erhalten
+receive :: Handle -> IO String
+receive status = do
+                 input <- hGetLine status
+                 return input
+                
+
 --Koordinaten an GUI senden (Parameter von War.getCoord holen) 
 
---printCoord :: Coord -> IO()
---printCoord coord = print ("Angriff auf " ++  show coord)    
+printCoord :: Coord -> IO()
+printCoord coord = print ("Angriff auf " ++  show coord)    
 
 --Status an GUI senden (Parameter von receiveStatus erhalten)
 printStatus :: Status -> IO() 
