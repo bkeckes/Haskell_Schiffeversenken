@@ -6,7 +6,8 @@ import Text.Regex.Posix ((=~))
 import System.IO (hGetLine,hClose,hPutStrLn,hSetBuffering,BufferMode(..),Handle,stdout)
 import System.Environment
 import Datatypes
- 
+
+
 port = 8001 
 
 -- liesst eine IP-Addresse
@@ -27,8 +28,8 @@ client = do
         h <- connectTo ip (PortNumber port)
         putStrLn $ "Connected to " ++ ip ++ ":" ++ show port
         hSetBuffering h LineBuffering
-       -- while2 (sendCoord h) (receive h)
-       -- hClose h
+        while2 (sendCoord h) (receive h)
+        hClose h
  
 -- senden der Koordinaten die auf der Konsole eingegeben wurden an den Server
 sendCoord h = do
