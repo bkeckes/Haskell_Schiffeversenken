@@ -12,7 +12,7 @@ port = 8001
  
 -- monadic `until`
 untilM p x = x >>= (\y -> if p y then return y else untilM p x) 
--- wiederholt beide Aktionen bis eine erfŸllt ist
+-- wiederholt beide Aktionen bis eine erfÙllt ist
 while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y 
 -- monadic `if`
 ifM p t f  = p >>= (\p' -> if p' then t else f)
@@ -39,33 +39,35 @@ receive h = do
         input <- hGetLine h
         putStrLn input
         return $ null input
-        
---Koordinaten vom Client erhalten
-receiveCoord :: Handle -> IO String
-receiveCoord coord = do
-                 input <- hGetLine coord
-                 return input
-        
+            
 --Status vom Client erhalten
-receiveStatus ::  Handle -> IO Bool 
+receiveStatus :: Handle -> IO String
 receiveStatus status = do
                  input <- hGetLine status
-                 return $ null input   
-        
+                 return input
+                 
+parseTyp :: String -> Status
+parseTyp status = 
+       |status = "" = Nothing
+       |status = "fail" = Fail
+       |status = "hit" = Hit
+       |status =  "destroyed" = Destroyed
+       |otherwise = Error   
+               
 --Senden von Koordinaten (handler)
-sendCoord :: Handle -> IO String
+sendCoord :: Coord -> IO String
 sendCoord coord = do
-              input <- getLine
-              return input
+              coord <- getLine
+              return coord
 
 --Senden von Status an Client (handler)
-sendStatus :: Handle -> IO Bool
+sendStatus :: Status -> IO String
 sendStatus status = do
-              input <- getLine
-              return $ null input
+              status <- getLine
+              return status
 
 --Senden von Start-und Endkoordinaten (handler)       
---sendStartAndEndCoord :: Handle -> (Coord, Coord) -> IO String
---sendStartAndEndCoord coord = do
---                 input <- getLine
---                 return input
+sendStartAndEndCoord ::(Coord, Coord) -> IO String
+sendStartAndEndCoord coord = do
+                 coord <- getLine
+                 return coord
