@@ -12,7 +12,7 @@ port = 8001
  
 -- monadic `until`
 untilM p x = x >>= (\y -> if p y then return y else untilM p x) 
--- wiederholt beide Aktionen bis eine erfÙllt ist
+-- wiederholt beide Aktionen bis eine erfŸllt ist
 while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y 
 -- monadic `if`
 ifM p t f  = p >>= (\p' -> if p' then t else f)
@@ -39,35 +39,33 @@ receive h = do
         input <- hGetLine h
         putStrLn input
         return $ null input
-            
+        
+--Koordinaten vom Client erhalten
+receiveCoord :: Handle -> IO String
+receiveCoord coord = do
+                 input <- hGetLine coord
+                 return input
+        
 --Status vom Client erhalten
-receiveStatus :: Handle -> IO String
+receiveStatus ::  Handle -> IO Bool 
 receiveStatus status = do
                  input <- hGetLine status
-                 return input
-                 
-parseTyp :: String -> Status
-parseTyp status = 
-       |status = "" = Nothing
-       |status = "fail" = Fail
-       |status = "hit" = Hit
-       |status =  "destroyed" = Destroyed
-       |otherwise = Error   
-               
+                 return $ null input   
+        
 --Senden von Koordinaten (handler)
-sendCoord :: Coord -> IO String
+sendCoord :: Handle -> IO String
 sendCoord coord = do
-              coord <- getLine
-              return coord
+              input <- getLine
+              return input
 
 --Senden von Status an Client (handler)
-sendStatus :: Status -> IO String
+sendStatus :: Handle -> IO Bool
 sendStatus status = do
-              status <- getLine
-              return status
+              input <- getLine
+              return $ null input
 
 --Senden von Start-und Endkoordinaten (handler)       
-sendStartAndEndCoord ::(Coord, Coord) -> IO String
-sendStartAndEndCoord coord = do
-                 coord <- getLine
-                 return coord
+--sendStartAndEndCoord :: Handle -> (Coord, Coord) -> IO String
+--sendStartAndEndCoord coord = do
+--                 input <- getLine
+--                 return input

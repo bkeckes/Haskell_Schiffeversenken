@@ -16,16 +16,13 @@ import System.Time (getClockTime, ClockTime(TOD))
 --ist ein Schiff der Liste komplett gesunken?
 isAShipDestroyed::MyShips->Bool
 isAShipDestroyed [] = False
-isAShipDestroyed (x:[]) = (hasShipState Hit x)
-isAShipDestroyed (x:xs) = (hasShipState Hit x) || (isAShipDestroyed xs)
+isAShipDestroyed (x:[]) = isOneShipDestroyed x
+isAShipDestroyed (x:xs) = isOneShipDestroyed x || isAShipDestroyed xs
 
 --gibt Anfang und Ende eines zerstörtem Schiffs zurück
 --und setzt Status auf destroyed
-getCoordsFromDestroyed::MyShips->(Coord,Coord)
-getCoordsFromDestroyed ships = getStartAndEnd $ getShipWithState Hit ships
-
-setShipToDestroyed::MyShips->MyShips
-setShipToDestroyed ships = changeShip ships $ changeStatusToDestroyed $ getShipWithState Hit ships
+setShipToDestroyed::MyShips->(Coord,Coord)
+setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedShip s
 
 --setzt durch Zufall alle Shiffe in das Feld
 generateMyShips::MyShips
@@ -49,49 +46,26 @@ generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 
 ---------------------------------------------------------
 --  Hilfsfunktionen -------------------------------------
 ---------------------------------------------------------
-
--- Tauscht das Schiff in der Liste aus
-changeShip::MyShips->Ship->MyShips
-changeShip [] _ = []
-changeShip (x:[]) s = if(isSameShip x s)
-                       then s:[]
-					   else x:[]
-changeShip (x:xs) s = if(isSameShip x s)
-                        then s:xs
-                        else x : ( changeShip xs s )
-
---Vergleicht die Anfangskoordinaten zweier Schiffe						
-isSameShip::Ship->Ship->Bool
-isSameShip [] _ = True
-isSameShip _ [] = True
-isSameShip (x:xs) (y:ys) = isSameCoord x y && (isSameShip xs ys)
-
---Vergleicht Koordinaten
-isSameCoord::(Coord,Status)->(Coord,Status)->Bool
-isSameCoord (a,_) (b,_) = a==b
-
-
 --Ist das Schiff komplett getroffen? Also auf jeder Kooridinate Status = Hit?
-hasShipState::Status->Ship->Bool
-hasShipState state [] = True
-hasShipState state (x:[]) = isCoordState state x
-hasShipState state (x:xs) = (isCoordState state x) && (hasShipState state xs)
+isOneShipDestroyed::Ship -> Bool
+isOneShipDestroyed [] = True
+isOneShipDestroyed (x:[]) = isCoordHit x
+isOneShipDestroyed (x:xs) = (isCoordHit x) && isOneShipDestroyed (xs)
 
 --ist der Status dieser Koordinate Hit?
-isCoordState::Status->(Coord, Status) -> Bool
-isCoordState state (_,s) = if (s==state) then True
+isCoordHit:: (Coord, Status) -> Bool
+isCoordHit (_,s) = if (s==Hit) then True
                                else False
 
 --gib zerstörtes Shiff zurück                                                           
-getShipWithState::Status->MyShips->Ship
-getShipWithState state [] = []
-getShipWithState state (x:[]) = if(hasShipState state x) == True
+getDestroyedShip::MyShips->Ship
+getDestroyedShip [] = []
+getDestroyedShip (x:[]) = if(isOneShipDestroyed x) == True
                             then x
                             else []
-getShipWithState state (x:xs) = if(hasShipState state x) == True
+getDestroyedShip (x:xs) = if(isOneShipDestroyed x) == True
                            then x
-                           else getShipWithState state xs
-						   
+                           else getDestroyedShip xs
 
 --gibt die Start und End Koordinaten eines Shiffs in einem Tupel zurück.
 getStartAndEnd::Ship->(Coord,Coord)
@@ -115,18 +89,17 @@ changeTupelToDestroyed (c,s) = (c,Destroyed)
 
 ----Es wird ein neues Schiff in die Liste eingefügt. Dann wird die Liste zurück gegeben
 generateNewShip::Int->Int->MyShips->MyShips
-generateNewShip salt laenge feld = if (neuesFeld == feld)
-                            then generateNewShip (salt+1) laenge feld
-                            else neuesFeld
-                            where neuesFeld = (insertShip (getShip salt laenge) feld)
+generateNewShip a i [] = insertShip (getShip a i) []
+generateNewShip a i s = if (neu == s)
+                            then generateNewShip (a+1) i s
+                            else neu
+                            where neu = (insertShip (getShip a i) s)
                                           
-										  
-								
 -- Ein Schiff wird in die Liste eingefügt                                          
 insertShip::Ship->MyShips->MyShips
 insertShip n s = if ((isCoordTaken n (makeOneList s [((1,1),Fail)]))) == False
                          then n : s
-                         else s
+                                                 else s
 
 --Es wird eine lange Liste aus allen Schiffen erstellt                                                 
 makeOneList::MyShips->[(Coord,Status)]->[(Coord,Status)]
