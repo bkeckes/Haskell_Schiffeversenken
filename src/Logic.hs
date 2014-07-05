@@ -5,17 +5,17 @@ import qualified Data.Map as M
 myships= [[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fromIntegral 2::Int,fromIntegral 3::Int),Fail)]]
 enemyField3 = M.fromList[((fromIntegral 1::Int,fromIntegral 1::Int),Fail),((fromIntegral 1::Int,fromIntegral 10::Int),Hit)]
 
---fügt einen Status im Spielfeld ein. Diese Funktion kann sowohl für das gegnerische als auch für das eigene Speilfeld aufgerufen werden
+--fügt einen Status im Spielfeld ein. Diese Methode kann sowohl für das gegnerische als auch für das eigene Speilfeld aufgerufen werden
 insertStatus::Status->EnemyField->Coord->EnemyField
 insertStatus state field (c,i) = M.insert (c,i) state field
 
--- Diese Funktion fügt von den Koordinaten (x1,y1) bis (x2,y2) den Status state in das Spielfeld ein
+--Diese Methode fügt von den Koordinaten (x1,y1) bis (x2,y2) den Status state in das Spielfeld ein
 insertStatuus::(Coord,Coord)->Status->EnemyField->EnemyField
 insertStatuus ((x1,y1),(x2,y2)) state field = insertShipState coordsList state field 
         where coordsList = if(x1==x2)
-								then zip  (replicate (y2-y1+1) x1) [y1..y2+1] 
-								else zip  (replicate (x2-x1+1) y1) [x1..x2+1] 
-
+                                                        then zip  (replicate (y2-y1+1) x1) [y1..y2+1] 
+                                                        else zip  (replicate (x2-x1+1) y1) [x1..x2+1] 
+                
 --Wird von insertStatuus aufgerufen und fügt rekursiv den Status in die Koordinaten der Liste Coords ein                 
 insertShipState::Coords->Status->EnemyField->EnemyField
 insertShipState [] state field=field
@@ -39,7 +39,7 @@ isHit c (s:ss) = isHitInShip c s || isHit c ss
 isHitInShip::Coord->Ship->Bool
 isHitInShip c [] = False
 isHitInShip c (s:ss) = flag || isHitInShip c ss
-        where flag = if c == fst s && snd s == Hit
+        where flag = if c == fst s && snd s == PartShip
                                                 then True
                                                 else False
 
@@ -55,5 +55,5 @@ insertShipsInField (s:ss) field = M.union (insertShipInField s field) (insertShi
 
 insertShipInField::Ship->EnemyField->EnemyField
 insertShipInField [] field = field
-insertShipInField (c:cs) field = M.union (M.insert (fst c) Hit field) (insertShipInField cs field)
+insertShipInField (c:cs) field = M.union (M.insert (fst c) PartShip field) (insertShipInField cs field)
 
