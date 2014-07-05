@@ -18,24 +18,24 @@ main = do
                                       -- zwischen 1 und 10
     let randomPs = randomPairs randoms -- generiere Paare aus Zufallszahlen
     let field = genRandomField randomPs
-    --print $ field == nub field -- Field enth√§lt keine doppelten, nur zum Testen
+    --print $ field == nub field -- Field enthält keine doppelten, nur zum Testen
     print field
-	
+
 test::IO ()
 test = do
-	 -- hole die aktuelle Zeit als Int
+         -- hole die aktuelle Zeit als Int
     init <- fmap fromInteger $ getClockTime >>= (\(TOD sec _) -> return sec)
     -- initialisiere den RandomGen
     let gen = mkStdGen init
     let ra = take 10 ( randomRs (1,10) gen)
     print 2
     -- print head randoms
---	let randNum = getNum randoms
+--      let randNum = getNum randoms
     -- let randomPs = randomPairs randoms -- generiere Paare aus Zufallszahlen
     -- let field = genRandomField randomPs
-    -- print $ field == nub field -- Field enth√§lt keine doppelten, nur zum Testen
+    -- print $ field == nub field -- Field enthält keine doppelten, nur zum Testen
     -- print field
-	
+
 getNum::[Integer]->Integer
 getNum x = head x
 
@@ -52,7 +52,7 @@ genRandomField :: [Ship] -> Field
 genRandomField randoms =
     fst $ genRandomField' emptyField randoms
 
--- einf√ºgen bis die Bedingung gilt
+-- einfügen bis die Bedingung gilt
 genRandomField' :: Field -> [Ship] -> (Field, [Ship])
 genRandomField' field (ship:ships)
     | enoughShips field = (field, [])
@@ -61,4 +61,3 @@ genRandomField' field (ship:ships)
 -- hier muss Ihre Bedingung an das Feld stehen
 enoughShips :: Field -> Bool
 enoughShips = (>=100) . length
-
