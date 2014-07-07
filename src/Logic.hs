@@ -9,7 +9,7 @@ enemyField3 = M.fromList[((fromIntegral 1::Int,fromIntegral 1::Int),Fail),((from
 insertStatus::Status->EnemyField->Coord->EnemyField
 insertStatus state field (c,i) = M.insert (c,i) state field
 
--- Diese Funktion fügt von den Koordinaten (x1,y1) bis (x2,y2) den Status state in das Spielfeld ein
+-- |Diese Funktion fügt von den Koordinaten (x1,y1) bis (x2,y2) den Status state in das Spielfeld ein
 insertStatuus::(Coord,Coord)->Status->EnemyField->EnemyField
 insertStatuus ((x1,y1),(x2,y2)) state field = insertShipState coordsList state field 
         where coordsList = if(x1==x2)
