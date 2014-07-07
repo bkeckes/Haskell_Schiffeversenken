@@ -6,8 +6,7 @@ import Text.Regex.Posix ((=~))
 import System.IO (hGetLine,hClose,hPutStrLn,hSetBuffering,BufferMode(..),Handle,stdout)
 import System.Environment
 import Datatypes
-
-
+ 
 port = 8001 
 
 -- liesst eine IP-Addresse und ueberprueft die Syntax der IP-Addresse
@@ -29,7 +28,7 @@ client = do
         hSetBuffering h LineBuffering
         while2 (sendCoord h) (receive h)
         hClose h
-    
+       
  
 -- senden der Koordinaten die auf der Konsole eingegeben wurden an den Server
 sendCoord h = do

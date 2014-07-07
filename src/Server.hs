@@ -46,13 +46,8 @@ receiveStatus status = do
                  input <- hGetLine status
                  return input
                  
-parseTyp :: String -> Status
-parseTyp status = 
-       |status = "" = Nothing
-       |status = "fail" = Fail
-       |status = "hit" = Hit
-       |status =  "destroyed" = Destroyed
-       |otherwise = Error   
+--parseStatus :: String -> Status 
+parseStatus string = 
                
 --Senden von Koordinaten (handler)
 sendCoord :: Coord -> IO String
