@@ -2,37 +2,38 @@ module Main where
 
 import Test.Framework
 import Test.Framework.Providers.HUnit
-import Test.Framework.Providers.QuickCheck2
 
-import Test.QuickCheck
 import Test.HUnit
 
-import Moviestore
+import Logic
+import Datatypes
+import qualified Data.Map as M
+
+
 
 main :: IO ()
 main = defaultMain tests
 
 tests :: [Test.Framework.Test]
 tests =
-  [ testGroup "QuickCheck Tests"
-    [ testProperty "The first movie in a list is extractable." prop_extractFirst
-    ]
-  , testGroup "HUnit Tests"
-    [ testCase "A rented movie is returnable." testReturn
+  [  testGroup "HUnit Tests"
+    [ testCase "A rented movie is returnable." test_insertStatus
     ]
   ]
 
--- QuickCheck
-
-prop_extractFirst :: [Movie] -> Property
-prop_extractFirst movies =
-    not (null movies)
-        ==> (extract i movies == (Just m, ms))
-  where
-    (m@(i,_,_):ms) = movies
-
--- HUnit
-
+test_insertStatus :: Assertion
+test_insertStatus =
+	let
+		tstate=Hit
+		tstate2=Fail
+		tenemyField=M.empty
+		tenemyField2=M.fromList[((fromIntegral 1::Int,fromIntegral 1::Int),PartShip)]
+		tcoord=(1,1)
+		tcoord1=(2,2)
+	in assertBool "State in enemyField?"
+		$((insertStatus tstate tenemyField tcoord1) M.! tcoord1 == tstate) &&
+		 ((insertStatus tstate2 tenemyField2 tcoord) M.! tcoord == tstate2)
+{-
 testReturn :: Assertion
 testReturn =
   let
@@ -45,4 +46,6 @@ testReturn =
                    ]
                  )
     (available', rentable') = Moviestore.return ident moviestore
-  in assertBool "Rented movie should be available and not rented after returning it"        $ movie `elem` available' && movie `notElem` rentable'
+  in assertBool "Rented movie should be available and not rented after returning it"      
+    $ movie `elem` available' && movie `notElem` rentable'
+-}
