@@ -1,17 +1,26 @@
+{-|
+Module      : Main 
+Description : : Spielablauf
+Maintainer  : soulta@hm.edu, bitte alle eintragen.
+
+Hier wird der eigentliche Speilablauf implementiert.
+-}
 module Main where
 
 import System.IO (hSetBuffering, BufferMode(NoBuffering), stdout)
 import Datatypes
 import UserInterface
-import Server
-import Client
+--import Server
+--import Client
 import War
 import Logic
 
 import qualified Data.Map as M
-
+-- | Generieren der eigenen Schiffe.
 ships = [[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fromIntegral 1::Int,fromIntegral 3::Int),PartShip),((fromIntegral 5::Int,fromIntegral 3::Int),PartShip)]]--generateMyShips
+-- | Eigenes Spielfeld initialisieren.
 myfield = initializeField ships
+-- | Speilstand initialisieren
 gameStatus = Game { myField = myfield, enemyField=M.empty, myShips=ships, turn=Enemy }	--gameLoop gamestatus
 myTurn=False
 pseudoCoords=(5,3)
@@ -22,6 +31,7 @@ ende=(1,5)
            
 --enemyField = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed),((9,3),Hit)]
 
+-- | Main Funktion. Hier wird nur die Funktion gameLoop aufgerufen.
 main :: IO ()
 main = do
     putStrLn "Willkommen bei Hit the Ships!"
@@ -32,6 +42,8 @@ main = do
     
     --Feld Spieler 2 initialisieren
 
+-- | Diese Funktion ruft sich immer wieder selbst mit dem neuen Spielstand auf.
+-- Falls der Spieler an der Reihe ist wird die Funktion myturn aufgerufen. Falls der Gegner an der Reihe ist wird die Funktion notmyturn aufgerufen.
 gameLoop :: Game -> IO ()
 gameLoop gameStatus = do
     if ((turn gameStatus)==Again  )
@@ -40,9 +52,7 @@ gameLoop gameStatus = do
     
     printMyField $ myField newGameStatus
     printMyField $ enemyField newGameStatus
-    if isHit pseudoCoords (myShips gameStatus)
-		then putStrLn("hit")
-		else putStrLn("fail")
+
    -- gameLoop newGameStatus	
 	where   newGameStatus= if ((turn gameStatus)==Me ||(turn gameStatus)==Again  )
                                 then myturn gameStatus
@@ -52,7 +62,8 @@ gameLoop gameStatus = do
 	                                                else fluchtwert
 	
     
-    
+-- | Wird augerufen, falls der Spieler an der Reihe ist. Dieser Funktion wird der aktuelle Spielstand übergeben.
+-- Diesen gibt Sie dann aktualisiert wieder zurück. Ablauf wird in der Grafik näher erleutert.
 myturn :: Game->Game
 myturn gameStatus=if (coordIsPlayed pseudoC (enemyField gameStatus))
 					  then Game {myField =  (myField gameStatus), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Again}
@@ -72,7 +83,9 @@ myturn gameStatus=if (coordIsPlayed pseudoC (enemyField gameStatus))
 									then print("Koordinate wurde schon gespielt, bitte nochmal")
 									else print("yees")
 									
-									
+
+-- | Wird augerufen, falls der Gener an der Reihe ist. Dieser Funktion wird der aktuelle Spielstand übergeben.
+-- Diesen gibt Sie dann aktualisiert wieder zurück. Ablauf wird in der Grafik näher erleutert. 
 notmyturn :: Game->Coord->Game
 notmyturn gameStatus coords=if(isHit coords (myShips gameStatus))
                                 then if isAShipDestroyed newShips 
