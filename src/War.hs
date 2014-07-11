@@ -29,7 +29,20 @@ setShipToDestroyed ships = changeShip ships $ changeStatusToDestroyed $ getShipW
 
 --setzt durch Zufall alle Shiffe in das Feld
 generateMyShips::MyShips
-generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 4 $ generateNewShip 0 4 $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
+generateMyShips = generateNewShip 0 2 
+                  $ generateNewShip 0 2 
+				  $ generateNewShip 0 3 
+				  $ generateNewShip 0 3 
+				  $ generateNewShip 0 3 
+				  $ generateNewShip 0 4 
+				  $ generateNewShip 0 4 
+				  $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
+				  
+				  
+test::Int
+test = let a = 2
+           b = a+4
+		in a+b
 
 
 -- generateMyShips' :: IO MyShips

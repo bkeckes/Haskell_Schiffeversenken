@@ -47,12 +47,11 @@ receiveStatus status = do
                  return input
                  
 parseTyp :: String -> Status
-parseTyp status = 
-       |status = "" = Nothing
-       |status = "fail" = Fail
-       |status = "hit" = Hit
-       |status =  "destroyed" = Destroyed
-       |otherwise = Error   
+parseTyp status = "" = Nothing
+       | status = "fail" = Fail
+       | status = "hit" = Hit
+       | status =  "destroyed" = Destroyed
+       | otherwise = Error   
                
 --Senden von Koordinaten (handler)
 sendCoord :: Coord -> IO String

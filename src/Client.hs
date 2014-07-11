@@ -29,11 +29,7 @@ client = do
         hSetBuffering h LineBuffering
         while2 (sendCoord h) (receive h)
         hClose h
-<<<<<<< HEAD
-=======
-       
->>>>>>> 86fc57a54d75cee87cf7e5732a14aaf7ed9e3bf5
- 
+
 -- senden der Koordinaten die auf der Konsole eingegeben wurden an den Server
 sendCoord h = do
         putStr "Angriff: Geben Sie die Koordinaten an: "
