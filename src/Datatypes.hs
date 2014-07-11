@@ -1,7 +1,7 @@
 {-|
 Module      : Datatypes 
 Description : : Definition von Datentypen die für das Spiel benötigt werden
-Maintainer  : soulta@hm.edu, bitte alle eintragen.
+Maintainer  : soulta@hm.edu, keckes@hm.edu
 
 In diesem Modul werden die Datentypen definiert die für das Spiel benötigt werden.
 -}

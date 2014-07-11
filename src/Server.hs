@@ -1,3 +1,12 @@
+{-|
+Module : Server
+Description : : Kommunikation Serverseite
+Maintainer : lutz6@hm.edu
+
+Hier wird die Verbindung zum Client akzeptiert und eine Verbindung aufgebaut.
+Hier findet die Kommunikation von der Logic Ÿber den Server zum Client statt.
+-}
+
 module Server where
 
 import Network
@@ -8,16 +17,16 @@ import System.Environment
 import Datatypes
 import Logic
 
-port = 8001 
+port = 8001
  
--- monadic `until`
-untilM p x = x >>= (\y -> if p y then return y else untilM p x) 
--- wiederholt beide Aktionen bis eine erfÙllt ist
-while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y 
--- monadic `if`
-ifM p t f  = p >>= (\p' -> if p' then t else f)
+-- | monadic `until`
+untilM p x = x >>= (\y -> if p y then return y else untilM p x)
+-- | wiederholt beide Aktionen bis eine erfÙllt ist
+while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y
+-- | monadic `if`
+ifM p t f = p >>= (\p' -> if p' then t else f)
 
--- server
+-- | server
 server = do
         sock <- listenOn (PortNumber port)
         putStrLn "Awaiting connection."
@@ -28,40 +37,53 @@ server = do
         hClose h
         sClose sock
  
--- sending
+-- | sending
 send h = do
         input <- getLine
         hPutStrLn h input
         return $ null input
  
--- receiving
+-- | receiving
 receive h = do
         input <- hGetLine h
         putStrLn input
         return $ null input
             
---Status vom Client erhalten
-receiveStatus :: Handle -> IO String
-receiveStatus status = do
-                 input <- hGetLine status
-                 return input
-                 
---parseStatus :: String -> Status 
-parseStatus string = 
+-- |Status vom Client erhalten
+--receiveStatus :: Handle -> IO Status
+receiveStatus h = do
+        input <- hGetLine h
+        putStrLn input
+        return input
+-- receiveStatus status = do
+                 -- input <- hGetLine status
+                 -- putStrLn input
+                 -- return (read input :: Status) 
+                  
+--parseStatus :: String -> Status
+parseStatus string =
+  if string == "Hit"
+    then return Hit
+    else if string == "Fail"
+      then return Fail
+      else if string == "Destroyed"
+      then return Destroyed
+       else return Fail
+  
                
---Senden von Koordinaten (handler)
+-- | Senden von Koordinaten (handler)
 sendCoord :: Coord -> IO String
 sendCoord coord = do
               coord <- getLine
               return coord
 
---Senden von Status an Client (handler)
+-- | Senden von Status an Client (handler)
 sendStatus :: Status -> IO String
 sendStatus status = do
               status <- getLine
               return status
 
---Senden von Start-und Endkoordinaten (handler)       
+-- | Senden von Start-und Endkoordinaten (handler)
 sendStartAndEndCoord ::(Coord, Coord) -> IO String
 sendStartAndEndCoord coord = do
                  coord <- getLine
