@@ -21,16 +21,16 @@ executable Haskell_Schiffeversenken
   -- hs-source-dirs:      
   default-language:    Haskell2010
 
---test-suite 
-  --type:              exitcode-stdio-1.0
-  --hs-source-dirs:    src tests
-  --Main-is:           TestSuite.hs
-  --Build-depends:     base >= 4.6 && < 4.7,
-   --                  QuickCheck >= 2,
-       --              HUnit,
-     --                test-framework,
-         --            test-framework-quickcheck2,
-           --          test-framework-hunit
+test-suite schiffeversenken-tests
+  type:              exitcode-stdio-1.0
+  hs-source-dirs:    src tests
+  Main-is:           TestSuite.hs
+  Build-depends:     base ,containers,time, random, old-time, regex-posix, network,
+                     QuickCheck >= 2,
+                     HUnit,
+                     test-framework,
+                     test-framework-quickcheck2,
+                     test-framework-hunit
   default-language:  Haskell2010
-  ghc-options: -O2 -Wall -fhpc -fwarn-tabs -funbox-strict-fields -threaded
+  ghc-options: -O2 -Wall -fwarn-tabs -funbox-strict-fields -threaded
                -fno-warn-unused-do-bind
