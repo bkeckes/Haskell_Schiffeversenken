@@ -1,9 +1,9 @@
 {-|
-Module      : Server 
+Module : Server
 Description : : Kommunikation Serverseite
-Maintainer  : lutz6@hm.edu
+Maintainer : lutz6@hm.edu
 
-Hier wird die Verbindung zum Client akzeptiert und eine Verbindung aufgebaut. 
+Hier wird die Verbindung zum Client akzeptiert und eine Verbindung aufgebaut.
 Hier findet die Kommunikation von der Logic Ÿber den Server zum Client statt.
 -}
 
@@ -17,14 +17,14 @@ import System.Environment
 import Datatypes
 import Logic
 
-port = 8001 
+port = 8001
  
 -- | monadic `until`
-untilM p x = x >>= (\y -> if p y then return y else untilM p x) 
+untilM p x = x >>= (\y -> if p y then return y else untilM p x)
 -- | wiederholt beide Aktionen bis eine erfÙllt ist
-while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y 
+while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y
 -- | monadic `if`
-ifM p t f  = p >>= (\p' -> if p' then t else f)
+ifM p t f = p >>= (\p' -> if p' then t else f)
 
 -- | server
 server = do
@@ -50,34 +50,26 @@ receive h = do
         return $ null input
             
 -- |Status vom Client erhalten
-receiveStatus :: Handle -> IO Status
-receiveStatus status = do
-<<<<<<< HEAD
-                 input <- hGetLine status
-                 return input
-                 
-parseTyp :: String -> Status
-parseTyp status = "" = Nothing
-       | status = "fail" = Fail
-       | status = "hit" = Hit
-       | status =  "destroyed" = Destroyed
-       | otherwise = Error   
-=======
-                  input <- hGetLine status
-                 --parseToStatus <- parseStatus input
-                  return (read input :: Status)
+--receiveStatus :: Handle -> IO Status
+receiveStatus h = do
+        input <- hGetLine h
+        putStrLn input
+        return input
+-- receiveStatus status = do
+                 -- input <- hGetLine status
+                 -- putStrLn input
+                 -- return (read input :: Status) 
                   
---parseStatus :: String -> Status 
-parseStatus string = 
-  if string == "Hit" 
+--parseStatus :: String -> Status
+parseStatus string =
+  if string == "Hit"
     then return Hit
     else if string == "Fail"
-      then return Fail 
+      then return Fail
       else if string == "Destroyed"
       then return Destroyed
        else return Fail
   
->>>>>>> bf77ba5c3d680b9d301ad0e4f194058d6fa1d02f
                
 -- | Senden von Koordinaten (handler)
 sendCoord :: Coord -> IO String
@@ -91,7 +83,7 @@ sendStatus status = do
               status <- getLine
               return status
 
--- | Senden von Start-und Endkoordinaten (handler)       
+-- | Senden von Start-und Endkoordinaten (handler)
 sendStartAndEndCoord ::(Coord, Coord) -> IO String
 sendStartAndEndCoord coord = do
                  coord <- getLine
