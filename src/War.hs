@@ -16,36 +16,26 @@ import System.Time (getClockTime, ClockTime(TOD))
 --ist ein Schiff der Liste komplett gesunken?
 isAShipDestroyed::MyShips->Bool
 isAShipDestroyed [] = False
-isAShipDestroyed (x:[]) = isOneShipDestroyed x
-isAShipDestroyed (x:xs) = isOneShipDestroyed x || isAShipDestroyed xs
+isAShipDestroyed (x:[]) = (hasShipState Hit x)
+isAShipDestroyed (x:xs) = (hasShipState Hit x) || (isAShipDestroyed xs)
 
 --gibt Anfang und Ende eines zerstörtem Schiffs zurück
 --und setzt Status auf destroyed
-setShipToDestroyed::MyShips->(Coord,Coord)
-setShipToDestroyed s = getStartAndEnd $ changeStatusToDestroyed $ getDestroyedShip s
+getCoordsFromDestroyed::MyShips->(Coord,Coord)
+getCoordsFromDestroyed ships = getStartAndEnd $ getShipWithState Hit ships
+
+setShipToDestroyed::MyShips->MyShips
+setShipToDestroyed ships = changeShip ships $ changeStatusToDestroyed $ getShipWithState Hit ships
 
 --setzt durch Zufall alle Shiffe in das Feld
 generateMyShips::MyShips
-generateMyShips = generateNewShip 0 2 
-                  $ generateNewShip 0 2 
-				  $ generateNewShip 0 3 
-				  $ generateNewShip 0 3 
-				  $ generateNewShip 0 3 
-				  $ generateNewShip 0 4 
-				  $ generateNewShip 0 4 
-				  $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
-				  
-				  
-test::Int
-test = let a = 2
-           b = a+4
-		in a+b
+generateMyShips = generateNewShip 0 2 $ generateNewShip 0 2 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 3 $ generateNewShip 0 4 $ generateNewShip 0 4 $ generateNewShip 0 5 [] -- $ generateNewShip 5 []
 
 
 -- generateMyShips' :: IO MyShips
 -- generateMyShips' = do
 -- gen <- getStdGen (randomR (1,10))
--- (val, nextGen) <- next gen	
+-- (val, nextGen) <- next gen
 -- let newShip = genNewShip val 2
 --einfügen
 
@@ -53,32 +43,55 @@ test = let a = 2
 -- genNewShip randomNo lOfShip = undefined
 
 -- eins::IO Integer
--- eins =  fromInteger $ getClockTime >>= (\(TOD sec _) -> return sec)
-	
+-- eins = fromInteger $ getClockTime >>= (\(TOD sec _) -> return sec)
+
 
 ---------------------------------------------------------
---  Hilfsfunktionen -------------------------------------
+-- Hilfsfunktionen -------------------------------------
 ---------------------------------------------------------
+
+-- Tauscht das Schiff in der Liste aus
+changeShip::MyShips->Ship->MyShips
+changeShip [] _ = []
+changeShip (x:[]) s = if(isSameShip x s)
+                       then s:[]
+else x:[]
+changeShip (x:xs) s = if(isSameShip x s)
+                        then s:xs
+                        else x : ( changeShip xs s )
+
+--Vergleicht die Anfangskoordinaten zweier Schiffe
+isSameShip::Ship->Ship->Bool
+isSameShip [] _ = True
+isSameShip _ [] = True
+isSameShip (x:xs) (y:ys) = isSameCoord x y && (isSameShip xs ys)
+
+--Vergleicht Koordinaten
+isSameCoord::(Coord,Status)->(Coord,Status)->Bool
+isSameCoord (a,_) (b,_) = a==b
+
+
 --Ist das Schiff komplett getroffen? Also auf jeder Kooridinate Status = Hit?
-isOneShipDestroyed::Ship -> Bool
-isOneShipDestroyed [] = True
-isOneShipDestroyed (x:[]) = isCoordHit x
-isOneShipDestroyed (x:xs) = (isCoordHit x) && isOneShipDestroyed (xs)
+hasShipState::Status->Ship->Bool
+hasShipState state [] = True
+hasShipState state (x:[]) = isCoordState state x
+hasShipState state (x:xs) = (isCoordState state x) && (hasShipState state xs)
 
 --ist der Status dieser Koordinate Hit?
-isCoordHit:: (Coord, Status) -> Bool
-isCoordHit (_,s) = if (s==Hit) then True
+isCoordState::Status->(Coord, Status) -> Bool
+isCoordState state (_,s) = if (s==state) then True
                                else False
 
---gib zerstörtes Shiff zurück                                                           
-getDestroyedShip::MyShips->Ship
-getDestroyedShip [] = []
-getDestroyedShip (x:[]) = if(isOneShipDestroyed x) == True
+--gib zerstörtes Shiff zurück
+getShipWithState::Status->MyShips->Ship
+getShipWithState state [] = []
+getShipWithState state (x:[]) = if(hasShipState state x) == True
                             then x
                             else []
-getDestroyedShip (x:xs) = if(isOneShipDestroyed x) == True
+getShipWithState state (x:xs) = if(hasShipState state x) == True
                            then x
-                           else getDestroyedShip xs
+                           else getShipWithState state xs
+
 
 --gibt die Start und End Koordinaten eines Shiffs in einem Tupel zurück.
 getStartAndEnd::Ship->(Coord,Coord)
@@ -102,23 +115,24 @@ changeTupelToDestroyed (c,s) = (c,Destroyed)
 
 ----Es wird ein neues Schiff in die Liste eingefügt. Dann wird die Liste zurück gegeben
 generateNewShip::Int->Int->MyShips->MyShips
-generateNewShip a i [] = insertShip (getShip a i) []
-generateNewShip a i s = if (neu == s)
-                            then generateNewShip (a+1) i s
-                            else neu
-                            where neu = (insertShip (getShip a i) s)
+generateNewShip salt laenge feld = if (neuesFeld == feld)
+                            then generateNewShip (salt+1) laenge feld
+                            else neuesFeld
+                            where neuesFeld = (insertShip (getShip salt laenge) feld)
                                           
--- Ein Schiff wird in die Liste eingefügt                                          
+
+
+-- Ein Schiff wird in die Liste eingefügt
 insertShip::Ship->MyShips->MyShips
 insertShip n s = if ((isCoordTaken n (makeOneList s [((1,1),Fail)]))) == False
                          then n : s
-                                                 else s
+                         else s
 
---Es wird eine lange Liste aus allen Schiffen erstellt                                                 
+--Es wird eine lange Liste aus allen Schiffen erstellt
 makeOneList::MyShips->[(Coord,Status)]->[(Coord,Status)]
 makeOneList [] l = l
 makeOneList (x:[]) l = l ++ x
-makeOneList (x:xs) l = (makeOneList xs l) ++ x 
+makeOneList (x:xs) l = (makeOneList xs l) ++ x
 
 --Sind alle Teile eines Schiffs innerhalb der Koordinaten
 isShipInField::Ship->Bool
@@ -134,15 +148,15 @@ getShip::Int->Int->Ship
 getShip a i = if(isShipInField neu == True)
                   then neu
                   else getShip (a+1) i
-                  where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])                                          
+                  where neu = makeFollowingCoords (makeHorizontal (getRandomNum (a+5)))(i-1) ((generateRandomCoord a i):[])
 
---sind die Koordinaten schon im Spielfeld vergeben?                          
+--sind die Koordinaten schon im Spielfeld vergeben?
 isCoordTaken::[(Coord,Status)]->[(Coord,Status)]->Bool
 isCoordTaken [] a = False
 isCoordTaken (x:xs) a = if (x `elem` a) then True
                                         else isCoordTaken xs a
 
---Erstellt eine zufällige Koordinate im Spielfeld                                                                                
+--Erstellt eine zufällige Koordinate im Spielfeld
 generateRandomCoord::Int->Int->(Coord,Status)
 generateRandomCoord a i = ((getRandomNum (a), getRandomNum (a+2)), Fail)
 
@@ -167,14 +181,14 @@ coordPlusOne True ((x,y),s) = ((x+1,y),s)
 
 -- gibt die Systemzeit aus. Wichtig als Salt für den zufallsgenerator
 getTime::Int
-getTime =  round (unsafePerformIO getPOSIXTime) :: Int
+getTime = round (unsafePerformIO getPOSIXTime) :: Int
 
 -- getInit::IO ()
 -- getInit = do
             -- init <- fmap fromInteger $ getClockTime >>= (\(TOD sec _) -> return sec)
             -- let gen = mkStdGen init
             -- let randoms = randomRs (1,10) gen -- erzeuge unendliche Liste von Zufallswerten
-                                    		  -- zwischen 1 und 10
+                                     -- zwischen 1 und 10
             -- let randomPs = randomPairs randoms -- generiere Paare aus Zufallszahlen
             -- let field = genRandomField randomPs
             -- print $ field == nub field -- Field enthält keine doppelten, nur zum Testen
@@ -183,12 +197,12 @@ getTime =  round (unsafePerformIO getPOSIXTime) :: Int
 
 --ist Paramter >=5 wird False zurück gegeben, sonst True
 makeHorizontal::Int->Bool
-makeHorizontal a = (a `elem` [1..4])                        
+makeHorizontal a = (a `elem` [1..4])
 
 
 
 ---------------------------------------------------------
---  Ende Hilfsfunktionen --------------------------------
+-- Ende Hilfsfunktionen --------------------------------
 ---------------------------------------------------------
                                                            
 
@@ -198,8 +212,8 @@ makeHorizontal a = (a `elem` [1..4])
 
 --gibt eine zufällige Coordinate aus der Liste zurück
 --getRandomCoord::[Coord]->Coord
---getRandomCoord:        g <- getStdGen
---                                print $ take 10 (randomRs ('a', 'z') g)
+--getRandomCoord: g <- getStdGen
+-- print $ take 10 (randomRs ('a', 'z') g)
 
 --Diese Funktion erstellt ein Feld mit Status
 
