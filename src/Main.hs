@@ -21,7 +21,7 @@ ships = generateMyShips --[[((fromIntegral 1::Int,fromIntegral 2::Int),Hit),((fr
 -- | Eigenes Spielfeld initialisieren.
 myfield = initializeField ships
 -- | Speilstand initialisieren
-gameStatus = Game { myField = myfield, enemyField=M.empty, myShips=ships, turn=Enemy }	--gameLoop gamestatus
+gameStatus = Game { myField = myfield, Datatypes.enemyField=M.empty, myShips=ships, turn=Enemy }	--gameLoop gamestatus
 myTurn=False
 pseudoCoords=(5,3)
 fluchtwert=(2,2)
@@ -50,8 +50,10 @@ gameLoop gameStatus = do
         then putStrLn("Feld bereits gespielt, bitte nochmal versuchen")
         else putStrLn("Feld noch nicht gespielt")
     
-    printMyField $ myField newGameStatus
-    printMyField $ enemyField newGameStatus
+    printHeadLineMyShoots
+    printField $ myField newGameStatus
+    printHeadLineMyShips
+    printField $ Datatypes.enemyField newGameStatus
 
    -- gameLoop newGameStatus	
 	where   newGameStatus= if ((turn gameStatus)==Me ||(turn gameStatus)==Again  )
@@ -65,11 +67,11 @@ gameLoop gameStatus = do
 -- | Wird augerufen, falls der Spieler an der Reihe ist. Dieser Funktion wird der aktuelle Spielstand ?bergeben.
 -- Diesen gibt Sie dann aktualisiert wieder zur?ck. Ablauf wird in der Grafik n?her erleutert.
 myturn :: Game->Game
-myturn gameStatus=if (coordIsPlayed pseudoC (enemyField gameStatus))
-					  then Game {myField =  (myField gameStatus), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Again}
+myturn gameStatus=if (coordIsPlayed pseudoC (Datatypes.enemyField gameStatus))
+					  then Game {myField =  (myField gameStatus), Datatypes.enemyField=(Datatypes.enemyField gameStatus), myShips=  (myShips gameStatus),turn=Again}
 					  else if pseudoS==Destroyed
-                              then Game { myField =  (myField gameStatus), enemyField=(insertStatuus (anfangK,endeK) Destroyed $enemyField gameStatus), myShips=  (myShips gameStatus),turn=Enemy}
-							  else Game { myField =  (myField gameStatus), enemyField=(insertStatus pseudoS (enemyField gameStatus) pseudoC), myShips= (myShips gameStatus), turn=Enemy}
+                              then Game { myField =  (myField gameStatus), Datatypes.enemyField=(insertStatuus (anfangK,endeK) Destroyed $Datatypes.enemyField gameStatus), myShips=  (myShips gameStatus),turn=Enemy}
+							  else Game { myField =  (myField gameStatus), Datatypes.enemyField=(insertStatus pseudoS (Datatypes.enemyField gameStatus) pseudoC), myShips= (myShips gameStatus), turn=Enemy}
 					          	where    
 								pseudoS=pseudoStatus  --Status der empfangen wurde
 								pseudoC = pseudoCoords  --Koordinaten die eingelesen wurden
@@ -79,7 +81,7 @@ myturn gameStatus=if (coordIsPlayed pseudoC (enemyField gameStatus))
 								endeK = if pseudoS==Destroyed
 											then ende --aus Netzwerk
 											else fluchtwert
-								h=if coordIsPlayed pseudoC (enemyField gameStatus)
+								h=if coordIsPlayed pseudoC (Datatypes.enemyField gameStatus)
 									then print("Koordinate wurde schon gespielt, bitte nochmal")
 									else print("yees")
 									
@@ -89,9 +91,9 @@ myturn gameStatus=if (coordIsPlayed pseudoC (enemyField gameStatus))
 notmyturn :: Game->Coord->Game
 notmyturn gameStatus coords=if(isHit coords (myShips gameStatus))
                                 then if isAShipDestroyed newShips 
-                                         then Game{myField =  (insertStatuus  (getCoordsFromDestroyed newShips) Destroyed (myField gameStatus)), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
-                                         else Game{myField =  (insertStatus Hit (myField gameStatus) coords), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
-                                else Game{myField =  (insertStatus Fail (myField gameStatus) coords), enemyField=(enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
+                                         then Game{myField =  (insertStatuus  (getCoordsFromDestroyed newShips) Destroyed (myField gameStatus)), Datatypes.enemyField=(Datatypes.enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
+                                         else Game{myField =  (insertStatus Hit (myField gameStatus) coords), Datatypes.enemyField=(Datatypes.enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
+                                else Game{myField =  (insertStatus Fail (myField gameStatus) coords), Datatypes.enemyField=(Datatypes.enemyField gameStatus), myShips=  (myShips gameStatus),turn=Me}
 							   where newShips = shootField coords (myShips gameStatus)
 
     --if myTurn

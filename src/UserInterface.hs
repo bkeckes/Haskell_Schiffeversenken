@@ -3,31 +3,42 @@ module UserInterface where
 import Datatypes
 import qualified Data.Map as M
 
-
+-- | 'createRow' erzeugt eine Zeile des Spielfelds
 createRow :: Int -> Int -> [Coord]
 createRow x 11 = []
 createRow x acc = (x, acc) : createRow x (acc + 1)
 
-hilfsfunktion :: [Int] -> Int -> [Coord]
-hilfsfunktion x 10 = []
-hilfsfunktion x acc = createRow (x!!acc) 1 ++ hilfsfunktion x (acc+1)
+-- | 'addRowToField' fügt dem Spielfeld eine Zeile hinzu
+addRowToField :: [Int] -> Int -> [Coord]
+addRowToField x 10 = []
+addRowToField x acc = createRow (x!!acc) 1 ++ addRowToField x (acc+1)
 
+-- | 'createField' lässt das Spielfeld erzeugen
 createField :: [Coord]
-createField = hilfsfunktion [1..10] 0
+createField = addRowToField [1..10] 0
+-- | 'printHeadLineMyShoots' druckt die Titelzeile des Spielfelds sowie die Überschrift des Felds
+printHeadLineMyShoots :: IO ()
+printHeadLineMyShoots = do
+    putStrLn ("\n          Meine abgefeuerten Schüsse\n")
+    printNumbers
 
-completeField = createField
+-- | 'printHeadLineMyShips' druckt die Titelzeile des Spielfelds sowie die Überschrift des Felds
+printHeadLineMyShips :: IO ()
+printHeadLineMyShips = do
+    putStrLn ("\n               Meine Schiffe\n")
+    printNumbers
+	
+-- | 'printField' druckt den Spielbildschirm 
+printField x = mapM_ putStr (map (printShoot' x) createField)
 
--- druckt den Spielbildschirm
-printMyField x = mapM_ putStr (map (printShoot' x) completeField)
-
---Schaut ob eine Coordinate in der Map ist
+-- | 'valueInMap' schaut ob eine Coordinate in der Map ist
 valueInMap :: Coord -> EnemyField -> Maybe Status
 valueInMap x y  = M.lookup x y
 
---Druckt die Spaltenbezeichnung des Spiels
-printNumbers = "    1   2   3   4   5   6   7   8   9   10\n\n" 
+-- | 'printNumbers' druckt die Spaltenbezeichnung des Spiels
+printNumbers = putStr "    1   2   3   4   5   6   7   8   9   10\n\n" 
 
--- Druckt einen einzelnen Schuss)
+-- | 'printShoot' druckt dass Ergebnis eines einzelnen Schuss
 printShoot :: Maybe Status -> String
 printShoot x
     |  x ==Nothing = "    "
@@ -36,7 +47,7 @@ printShoot x
 	|  x ==Just Destroyed = "   #"
     |  x ==Just PartShip ="   +"
 
--- Druckt die Reihen
+-- | 'printShoot'' druckt die Zeilen Bezeichnung und den einzelnen Schuss
 printShoot' :: EnemyField -> Coord -> String
 printShoot' x y
     | fst y == 1 && snd y == 1 = "A" ++ printShoot (valueInMap y x)
