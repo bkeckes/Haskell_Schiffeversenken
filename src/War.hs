@@ -22,7 +22,7 @@ isAShipDestroyed (x:xs) = (hasShipState Hit x) || (isAShipDestroyed xs)
 getCoordsFromDestroyed::MyShips->(Coord,Coord)
 getCoordsFromDestroyed ships = getStartAndEnd $ getShipWithState Hit ships
 
--- | setzt den Status aller Felder des Schiffes auf Destroyed
+-- | setzt den Status aller Felder des getroffenen Schiffes auf Destroyed
 setShipToDestroyed::MyShips->MyShips
 setShipToDestroyed ships = changeShip ships $ changeStatusToDestroyed $ getShipWithState Hit ships
 
@@ -30,12 +30,12 @@ setShipToDestroyed ships = changeShip ships $ changeStatusToDestroyed $ getShipW
 generateMyShips::MyShips
 generateMyShips = generateNewShip 0 2 $ 
                   generateNewShip 0 2 $ 
-				  generateNewShip 0 3 $ 
-				  generateNewShip 0 3 $ 
-				  generateNewShip 0 3 $ 
-				  generateNewShip 0 4 $ 
-				  generateNewShip 0 4 $ 
-				  generateNewShip 0 5 []
+                  generateNewShip 0 3 $ 
+                  generateNewShip 0 3 $ 
+                  generateNewShip 0 3 $ 
+                  generateNewShip 0 4 $ 
+                  generateNewShip 0 4 $ 
+                  generateNewShip 0 5 []
 
 
 ---------------------------------------------------------
@@ -45,6 +45,7 @@ generateMyShips = generateNewShip 0 2 $
 -- | Tauscht das Schiff in der Liste aus
 changeShip::MyShips->Ship->MyShips
 changeShip [] _ = []
+changeShip ships [] = ships
 changeShip (x:[]) s = if(isSameShip x s)
                        then s:[]
                        else x:[]
@@ -54,7 +55,9 @@ changeShip (x:xs) s = if(isSameShip x s)
 
 -- | Vergleicht zwei Schiffe miteinander
 isSameShip::Ship->Ship->Bool
-isSameShip [] [] = True
+isSameShip _ [] = False
+isSameShip [] _ = False
+isSameShip (x:[]) (y:[]) = isSameCoord x y
 isSameShip (x:xs) (y:ys) = isSameCoord x y && (isSameShip xs ys)
 
 -- | Vergleicht Koordinaten
@@ -64,7 +67,7 @@ isSameCoord (a,_) (b,_) = a==b
 
 -- | Hat das Schiff in allen Teilen den angeforderten Status?
 hasShipState::Status->Ship->Bool
-hasShipState state [] = False
+hasShipState _ [] = False
 hasShipState state (x:[]) = hasCoordState state x
 hasShipState state (x:xs) = (hasCoordState state x) && (hasShipState state xs)
 
@@ -74,7 +77,7 @@ hasCoordState state (_,s) = (s==state)
 
 -- | gib zerstörtes Shiff zurück
 getShipWithState::Status->MyShips->Ship
-getShipWithState state [] = []
+getShipWithState _ [] = []
 getShipWithState state (x:xs) = if(hasShipState state x) == True
                            then x
                            else getShipWithState state xs
@@ -97,7 +100,7 @@ changeStatusToDestroyed (x:xs) = (changeTupelToDestroyed x):changeStatusToDestro
 
 -- | Den Status eines Tupels auf Destroyed setzen
 changeTupelToDestroyed::(Coord,Status)->(Coord,Status)
-changeTupelToDestroyed (c,s) = (c,Destroyed)
+changeTupelToDestroyed (c,_) = (c,Destroyed)
 
 
 -- | Es wird ein neues Schiff in die Liste eingefügt. Dann wird die Liste zurück gegeben
@@ -123,6 +126,7 @@ makeOneList (x:xs) l = (makeOneList xs l) ++ x
 
 -- | Sind alle Teile eines Schiffs innerhalb der Koordinaten
 isShipInField::Ship->Bool
+isShipInField [] = False
 isShipInField (x:[]) = isCoordInField (x)
 isShipInField (x:xs) = isCoordInField (x) && isShipInField (xs)
 
@@ -139,13 +143,13 @@ getShip a i = if(isShipInField neu == True)
 
 -- | sind die Koordinaten schon im Spielfeld vergeben?
 isCoordTaken::[(Coord,Status)]->[(Coord,Status)]->Bool
-isCoordTaken [] a = False
+isCoordTaken [] _ = False
 isCoordTaken (x:xs) a = if (x `elem` a) then True
                                         else isCoordTaken xs a
 
 -- | Erstellt eine zufällige Koordinate im Spielfeld
 generateRandomCoord::Int->Int->(Coord,Status)
-generateRandomCoord a i = ((getRandomNum (a), getRandomNum (a+a)), Fail)
+generateRandomCoord a i = ((getRandomNum (a), getRandomNum (a+i)), Fail)
 
 -- | hängt den Rest des Schiffes an die zufällig erstellte Koordinate. Der Boolsche Wert gibt an ob horizontal oder vertikal
 makeFollowingCoords::Bool->Int->[(Coord, Status)]->[(Coord, Status)]
@@ -156,9 +160,9 @@ makeFollowingCoords a i l = makeFollowingCoords a (i-1) (l ++ (coordPlusOne a (l
 -- | gibt eine Zufällige Zahl zwischen 1 und 10 zurück. Der Parameter dient als 'salt'
 getRandomNum::Int->Int
 getRandomNum x = head (randomRs (1,10) g)
-	             where g = mkStdGen (getSpezNum x)
+                 where g = mkStdGen (getSpezNum x)
 
--- | Durch diese Funktion kommen mehr verschiedene Zufallszahlen				 
+-- | Durch diese Funktion kommen mehr verschiedene Zufallszahlen                 
 getSpezNum::Int->Int
 getSpezNum x = if (x `mod` 2) == 1 
                        then x+getTime
