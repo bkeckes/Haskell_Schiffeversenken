@@ -50,9 +50,9 @@ gameLoop gameStatus = do
         then putStrLn("Feld bereits gespielt, bitte nochmal versuchen")
         else putStrLn("Feld noch nicht gespielt")
     
-    printHeadLineMyShoots
-    printField $ myField newGameStatus
     printHeadLineMyShips
+    printField $ myField newGameStatus
+    printHeadLineMyShoots
     printField $ Datatypes.enemyField newGameStatus
 
    -- gameLoop newGameStatus	
