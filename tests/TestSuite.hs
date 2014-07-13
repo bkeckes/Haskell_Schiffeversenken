@@ -27,6 +27,7 @@ tests =
     ]
   ]
 
+
 test_insertStatus :: Assertion
 test_insertStatus =
     let
@@ -40,8 +41,51 @@ test_insertStatus =
            $((insertStatus tstate tenemyField tcoord1) M.! tcoord1 == tstate) &&
            ((insertStatus tstate2 tenemyField2 tcoord) M.! tcoord == tstate2)
            
-           
----------------------------------------------------
+-- | Insert Ship State wird mitgetstet
+test_insertStatuus::Assertion
+test_insertStatuus=
+	let 
+			tstate=Hit
+			tcoords=((1,2)(1,5))
+			tenemyField=M.fromList[((fromIntegral 1::Int,fromIntegral 1::Int),PartShip)]
+	in assertBool "States inserted?"
+			$ ((insertStatus tcoords tstate tenenmyField) M.! (1,2) ==tstate) &&
+				((insertStatus tcoords tstate tenenmyField) M.! (1,3) ==tstate) &&
+				((insertStatus tcoords tstate tenenmyField) M.! (1,4) ==tstate) &&
+				((insertStatus tcoords tstate tenenmyField) M.! (1,5) ==tstate)
+-- | isHitInShip wird mitgetestet	
+test_isHit::Assertion
+test:isHit = 
+	let tcoord=(1,1)
+		tcoord1=(3,3)
+		tships=[[((fromIntegral 3::Int,fromIntegral 3::Int),PartShip),((fromIntegral 4::Int,fromIntegral 3::Int),PartShip),((fromIntegral 5::Int,fromIntegral 3::Int),PartShip)]]
+	in assertBool "Ist die Koordinate in ships enthalten?"
+			$ ((isHit tcoord tships)==False)&&
+			  (isHit tcoord1 tships)
+
+-- | Testet shootShips mit 
+test_shootField::Assertion --Coord->MyShips->MyShips
+test_shootField =
+	let 
+			tcoord=(4,3)
+			tcoord2=(4,4)
+			tships=[[((fromIntegral 3::Int,fromIntegral 3::Int),PartShip),((fromIntegral 4::Int,fromIntegral 3::Int),PartShip),((fromIntegral 5::Int,fromIntegral 3::Int),PartShip)]]
+			tnewships= $ shootField tcoord tships
+	in assertBool "Ship shooted?"
+		$ (isHit tcoord tnewships)&&
+		  ((isHit tcoord2 tnewships)==False)
+		
+test_coordIsPlayed::Assertion
+test_coordIsPlayed=
+	let 
+			tcoord=(1,1)
+			tcoord2(1,3)
+			tenemyField=M.fromList[((fromIntegral 1::Int,fromIntegral 1::Int),Hit)]
+	in assertBool "Wurde die Koordinate schon gespielt?"
+		$(coordIsPlayed tcoord tenemyField)&&
+		 ((coordIsPlayed tcoord2 tenemyField)==False)
+		
+--------------------------------------------------
 -- Bennis Tests
 ---------------------------------------------------
 test_isOneShipDestroyed :: Assertion
