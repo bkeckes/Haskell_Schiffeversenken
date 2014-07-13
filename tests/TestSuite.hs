@@ -8,6 +8,7 @@ import Test.HUnit
 import Logic
 import War
 import Datatypes
+import UserInterface
 import qualified Data.Map as M
 
 
@@ -104,3 +105,4 @@ getTS6 = [((2,4), Hit), ((2,5), Hit), ((2,6),Hit), ((2,7),Hit), ((2,8), Hit)]
 
 getS::MyShips
 getS = [getTS1,getTS2,getTS3, getTS4]
+
