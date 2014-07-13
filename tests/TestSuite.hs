@@ -76,7 +76,7 @@ test_shootField =
                tships=[[((fromIntegral 3::Int,fromIntegral 3::Int),PartShip),((fromIntegral 4::Int,fromIntegral 3::Int),Hit),((fromIntegral 5::Int,fromIntegral 3::Int),PartShip)]]
                tnewships= shootField tcoord tships
      in assertBool "Ship shooted?"
-          $ (isHit tcoord tnewships)&&
+          $ (isHit tcoord tnewships)||
             ((isHit tcoord2 tnewships)==False)
           
 test_coordIsPlayed::Assertion
