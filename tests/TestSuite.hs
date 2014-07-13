@@ -29,6 +29,7 @@ tests =
        testCase "Richtige Koordinaten vom zerstoerten Schiff?" test_getCoordsFromDestroyed,
        testCase "Zerstoertes Schiff soll als Destroyed markiert werden" test_setShipToDestroyed,
        testCase "Schiffe ueberlagern sich nicht" test_generateMyShips
+	   testCase "Grafik wird angezeigt wie es soll" test_uiPasst
     ]
   ]
 
@@ -153,3 +154,20 @@ getTS6 = [((2,4), Hit), ((2,5), Hit), ((2,6),Hit), ((2,7),Hit), ((2,8), Hit)]
 
 getS::MyShips
 getS = [getTS1,getTS2,getTS3, getTS4]
+
+--------------------------------------------------------
+-- Wasims Tests
+--------------------------------------------------------
+
+test_uiPasst :: Assertion
+test_uiPasst == assertBool "Stimmt die Sollausgabe mit der Istausgabe über ein?"
+    $((sollSchuesse == map (printShoot' testSchuesse) createField) &&
+	  (sollLeeresFeld == map ((printShoot' testLeeresFeld) createField))
+
+
+sollSchuesse = ["A   O" ]++ take 3 (repeat "    ") ++ ["   X"] ++ take 4 (repeat "    ") ++ ["   #\n\n"] ++ ["B    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++  ["C    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["D    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++["E    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["F    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["G   "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["H    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["I    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["J    ","    "] ++ ["   X"] ++ take 7 (repeat "    ") ++ ["    \n\n"]
+sollLeeresFeld = ["A    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["B    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["C    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["D    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["E    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["F    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["G    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["H    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["I    "]++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["J    "]++ take 8 (repeat "    ") ++ ["    \n\n"]
+testSchuesse :: EnemyField
+testSchuesse = M.fromList[((1,1),Fail),((1,5),Hit),((1,10),Destroyed),((9,3),Hit)]
+testLeeresFeld :: EnemyField
+testLeeresFeld = M.fromList[]
