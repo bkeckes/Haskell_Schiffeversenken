@@ -3,7 +3,7 @@ Module      : Client
 Description : : Kommunikation auf der Clientseite 
 Maintainer  : lutz6@hm.edu
 
-Hier wird die Kommunikation mit dem Server aufgebaut und Spieldaten von Server zu Client und umgekehrt geschickt.
+Hier wird die Kommunikation mit dem Server aufgebaut und Spieldaten von Server zu Client (Gegner) und umgekehrt geschickt.
 -}
 
 module Client where
@@ -34,11 +34,12 @@ client = do
         h <- connectTo ip (PortNumber port)
         putStrLn $ "Connected to " ++ ip ++ ":" ++ show port
         hSetBuffering h LineBuffering
-        while2 (sendCoord h) (receive h)
+        while2 (sendCoordToServer h) (receive h);
         hClose h
--- | Senden der Koordinaten die auf der Konsole eingegeben wurden an den Server
-sendCoord h = do
-        putStr "Angriff: Geben Sie die Koordinaten an: "
+
+             
+-- | senden
+send h = do
         input <- getLine
         hPutStrLn h input
         return $ null input
@@ -48,17 +49,29 @@ receive h = do
         input <- hGetLine h
         putStrLn input
         return $ null input
+          
               
-                  
--- | Daten vom Server erhalten
-receive :: Handle -> IO String
-receive status = do
-                 input <- hGetLine status
-                 return input
+-- | Senden der Koordinaten die auf der Konsole eingegeben wurden an den Server
+sendCoordToServer h = do
+        putStr "Angriff: Geben Sie die Koordinaten an: "
+        input <- getLine
+        hPutStrLn h input
+        return $ null input             
+                          
+-- | Status vom Server erhalten
+receiveStatus :: Handle -> IO String
+receiveStatus h = do
+        input <- hGetLine h
+        return input
+ 
+-- | Umwandeln vom Status aus receiveStatus in richtiges Format 
+getStatus :: Monad m => [Char] -> m Status
+getStatus status =  do
+  if status == "Hit"
+        then return Hit
+        else return Fail
                 
-
 -- | Koordinaten an GUI senden (Parameter von War.getCoord holen) 
-
 printCoord :: Coord -> IO()
 printCoord coord = print ("Angriff auf " ++  show coord)    
 

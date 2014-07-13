@@ -20,16 +20,16 @@ tests :: [Test.Framework.Test]
 tests =
   [  testGroup "HUnit Tests"
     [ testCase "Status einfuegen" test_insertStatus,
-	  testCase "Statuus" test_insertStatuus,
-	  testCase "isHit" test_isHit,
-	  testCase "shootField" test_shootField,
-	  testCase "coordIsPlayed" test_coordIsPlayed,
+          testCase "Statuus" test_insertStatuus,
+          testCase "isHit" test_isHit,
+          testCase "shootField" test_shootField,
+          testCase "coordIsPlayed" test_coordIsPlayed,
        --Bennis Tests
        testCase "Erkennen der zerstoerten Schiffe" test_isOneShipDestroyed,
        testCase "Richtige Koordinaten vom zerstoerten Schiff?" test_getCoordsFromDestroyed,
        testCase "Zerstoertes Schiff soll als Destroyed markiert werden" test_setShipToDestroyed,
        testCase "Schiffe ueberlagern sich nicht" test_generateMyShips,
-	   testCase "Grafik wird angezeigt wie es soll" test_uiPasst
+           testCase "Grafik wird angezeigt wie es soll" test_uiPasst
     ]
   ]
 
@@ -98,7 +98,7 @@ test_isOneShipDestroyed :: Assertion
 test_isOneShipDestroyed =
         assertBool "Ist das Schiff zerstoert?"
         $(
-		 ( hasShipState Hit getTS2 == True) &&
+                 ( hasShipState Hit getTS2 == True) &&
          ( hasShipState Hit getTS6 == True) &&
          ( hasShipState Hit getTS5 == False) &&
          ( hasShipState Hit getTS3 == False)
@@ -109,7 +109,7 @@ test_getCoordsFromDestroyed :: Assertion
 test_getCoordsFromDestroyed =
         assertBool "Sind das die Koordinaten des zerstoerten Schiffes?"
         $(
-		  ( getCoordsFromDestroyed getS == ((2,1),(2,3)) ) && 
+                  ( getCoordsFromDestroyed getS == ((2,1),(2,3)) ) && 
           ( getCoordsFromDestroyed [getTS1, getTS5, getTS6] == ((2,4),(2,8)) ) &&
           ( getCoordsFromDestroyed [getTS1, getTS5, getTS4] == ((0,0),(0,0)) )
          )
@@ -118,7 +118,7 @@ test_getCoordsFromDestroyed =
 test_setShipToDestroyed :: Assertion
 test_setShipToDestroyed = assertBool "Hat sich Status geaendert?"
         $(
-		  ( setShipToDestroyed [getTS1, getTS5, getTS2] == [getTS1, getTS5, [((2,1),Destroyed), ((2,2),Destroyed), ((2,3), Destroyed)]] ) &&
+                  ( setShipToDestroyed [getTS1, getTS5, getTS2] == [getTS1, getTS5, [((2,1),Destroyed), ((2,2),Destroyed), ((2,3), Destroyed)]] ) &&
           ( setShipToDestroyed [getTS1, getTS5, getTS3] == [getTS1, getTS5, getTS3] ) &&
           ( setShipToDestroyed [getTS1, getTS5, getTS4] == [getTS1, getTS5, getTS4] )
          )
@@ -126,7 +126,7 @@ test_setShipToDestroyed = assertBool "Hat sich Status geaendert?"
 test_generateMyShips :: Assertion
 test_generateMyShips = assertBool "Kommt eine Koordinate oefter vor?"           
           $(
-		    ( kommtDoppelt (makeOneList [getTS1, getTS5, getTS2] []) [] == False ) &&
+                    ( kommtDoppelt (makeOneList [getTS1, getTS5, getTS2] []) [] == False ) &&
             ( kommtDoppelt (makeOneList [getTS1, getTS5, getTS4] []) [] == True ) &&
             ( kommtDoppelt (makeOneList generateMyShips []) [] ==          False ) 
            )
@@ -166,9 +166,9 @@ getS = [getTS1,getTS2,getTS3, getTS4]
 test_uiPasst :: Assertion
 test_uiPasst = assertBool "Stimmt die Sollausgabe mit der Istausgabe ueber ein?"
     $( 
-	  (sollSchuesse ==   map (printShoot' testSchuesse)   createField) &&
-	  (sollLeeresFeld == map (printShoot' testLeeresFeld) createField)
-	 )
+          (sollSchuesse ==   map (printShoot' testSchuesse)   createField) &&
+          (sollLeeresFeld == map (printShoot' testLeeresFeld) createField)
+         )
 
 
 sollSchuesse = ["A   O"] ++ take 3 (repeat "    ") ++ ["   X"] ++ take 4 (repeat "    ") ++ ["   #\n\n"] ++ ["B    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++  ["C    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["D    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++["E    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["F    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["G    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["H    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["I    "] ++ take 8 (repeat "    ") ++ ["    \n\n"] ++ ["J    ","    "] ++ ["   X"] ++ take 6 (repeat "    ") ++ ["    \n\n"]

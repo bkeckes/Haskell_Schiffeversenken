@@ -26,6 +26,8 @@ while2 x y = ifM x (return ()) $ ifM y (return ()) $ while2 x y
 -- | monadic `if`
 ifM p t f = p >>= (\p' -> if p' then t else f)
 
+myTurn = False
+
 -- | server
 server = do
         sock <- listenOn (PortNumber port)
@@ -33,57 +35,50 @@ server = do
         (h,host,port) <- accept sock
         putStrLn $ "Received connection from " ++ host ++ ":" ++ show port
         hSetBuffering h LineBuffering
-        while2 (receive h) (send h)
+        while2 (receive h) (send h) 
         hClose h
         sClose sock
  
--- | sending
+-- | senden
 send h = do
         input <- getLine
         hPutStrLn h input
         return $ null input
  
--- | receiving
+-- | empfangen
 receive h = do
         input <- hGetLine h
         putStrLn input
         return $ null input
-            
--- |Status vom Client erhalten
---receiveStatus :: Handle -> IO Status
-receiveStatus h = do
-        input <- hGetLine h
-        putStrLn input
-        return input
--- receiveStatus status = do
-                 -- input <- hGetLine status
-                 -- putStrLn input
-                 -- return (read input :: Status) 
-                  
---parseStatus :: String -> Status
-parseStatus string =
-  if string == "Hit"
-    then return Hit
-    else if string == "Fail"
-      then return Fail
-      else if string == "Destroyed"
-      then return Destroyed
-       else return Fail
   
-               
--- | Senden von Koordinaten (handler)
-sendCoord :: Coord -> IO String
-sendCoord coord = do
-              coord <- getLine
-              return coord
+-- | Koordinaten vom Client (Console) erhalten
+receiveCoord :: Handle -> Handle -> IO (String, String)
+receiveCoord coord1 coord2 = do
+        putStrLn $ "Angriff auf : "
+        input1 <- hGetLine coord1
+        input2 <- hGetLine coord2
+        return (input1,input2)
 
--- | Senden von Status an Client (handler)
+-- | Wandelt die Coordinaten von receiveCoord in richtiges Format um
+getCoordinates :: (String, String) -> (Int, Int)
+getCoordinates (input1,input2) = ((read input1 :: Int), (read input2 :: Int))
+
+                        
+-- | RŸckgabe der Koordinaten die auf der Konsole im Server eingegeben wurden
+sendCoordToClient :: Handle -> IO Bool
+sendCoordToClient h = do
+        putStr "Gegenangriff: Geben Sie die Koordinaten an: "
+        input <- getLine
+        hPutStrLn h input
+        return $ null input                       
+
+-- | Senden von Status an Client 
 sendStatus :: Status -> IO String
 sendStatus status = do
               status <- getLine
               return status
 
--- | Senden von Start-und Endkoordinaten (handler)
+-- | Senden von Start-und Endkoordinaten 
 sendStartAndEndCoord ::(Coord, Coord) -> IO String
 sendStartAndEndCoord coord = do
                  coord <- getLine
