@@ -33,7 +33,7 @@ printField x = mapM_ putStr (map (printShoot' x) createField)
 
 -- | 'valueInMap' schaut ob eine Coordinate in der Map ist
 valueInMap :: Coord -> EnemyField -> Maybe Status
-valueInMap x y  = M.lookup x y
+valueInMap = M.lookup 
 
 -- | 'printNumbers' druckt die Spaltenbezeichnung des Spiels
 printNumbers = putStr "    1   2   3   4   5   6   7   8   9   10\n\n" 
