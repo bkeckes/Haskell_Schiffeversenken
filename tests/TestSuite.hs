@@ -73,7 +73,7 @@ test_shootField =
      let 
                tcoord=(4,3)
                tcoord2=(4,4)
-               tships=[[((fromIntegral 3::Int,fromIntegral 3::Int),PartShip),((fromIntegral 4::Int,fromIntegral 3::Int),PartShip),((fromIntegral 5::Int,fromIntegral 3::Int),PartShip)]]
+               tships=[[((fromIntegral 3::Int,fromIntegral 3::Int),PartShip),((fromIntegral 4::Int,fromIntegral 3::Int),Hit),((fromIntegral 5::Int,fromIntegral 3::Int),PartShip)]]
                tnewships= shootField tcoord tships
      in assertBool "Ship shooted?"
           $ (isHit tcoord tnewships)&&
