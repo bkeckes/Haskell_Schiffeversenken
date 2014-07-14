@@ -64,7 +64,7 @@ gameLoop gameStatus = do
     printHeadLineMyShoots
     printField $ Datatypes.enemyField newGameStatus
 
-    gameLoop newGameStatus        
+   -- gameLoop newGameStatus        
         where   newGameStatus= if ((turn gameStatus)==Me ||(turn gameStatus)==Again  )
                                 then myturn gameStatus
                                 else notmyturn gameStatus coords
