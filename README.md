@@ -1,6 +1,4 @@
 # Haskell_Schiffeversenken
 Schiffeversenken in Haskell über Netzwerk
 
-Das ist die Beschreibung
-
-#neue Überschrift
+Ein Projekt aus dem FWP Funktionale Programmierung an der HM
